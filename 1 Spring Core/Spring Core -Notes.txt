@@ -1,0 +1,71 @@
+Spring CORE terminologies and topics:
+
+Annotations- 
+@configuration, @Order, @Autowired, @Quantifier, @Scope, @component, @Service, @Controller, @Repository, @Bean, @lazy, @DependsOn, @value, @import,
+@ComponentScan, @Primary, @PropertySource, @Resource, @PreDestroy, @Postconstruct 
+
+IOC
+Dependency Injection 
+Dependecy Lookup
+Java bean
+Bean class/ component class
+Spring Bean
+POJO
+POJI
+API
+Library
+Technology
+Framework
+Spring container / Spring IOC container
+BeanFactory
+FileSystemResource
+ClassPathResource
+Invasive framework
+Non-invasive framework
+Dependecy Lookup 
+Dependecy Injection
+Target class
+dependent class
+Dependecy management 
+DI types: Setter Injection - Widely Used
+DI types: Constructor Injection - Widely Used
+DI types: Aware/Interface/Contexual Injection - Not used widely. Not require.
+DI types: Lookup method injection  - Industry standard for Dependency Lookup operation 
+DI types: Method injection/ Method replacer  - Used in industry
+DI types: Field injection - discouraged  because makes the class less testable, breaks the principle of encapsulation, and can lead to problems with immutability and thread safety.
+DI Types: Circular injection - not required.
+
+XML Parsr- SAX, DOM
+applicationContext.xml
+Well formed XML
+Valid formed XML
+What is latest spring version? which stable and widely used.
+XMLBeanFactory class - deprecated in Spring 3.1
+DefaltListableBeanFactory and XMLBeanDefinationReader
+where should we use setter or constructor injection
+SingleTon scope
+Spring bean scope - (Web + standalon )Singleton, Prototype, (Web app only) - Request, Session and Application  - Spring 5 
+
+Spring Framework: The most recent stable release is version 6.1.11.
+
+Spring Boot: The current stable version is 3.3.1, released in June 2024. This version is built upon Spring Framework 6.1.10​
+
+ApplicationContext IOC - Modern and recommanded - created as factory pattern
+BeanFactory IOC - legacy - created as factory pattern
+
+default bean id
+stereotype annotation
+
+STS plugin
+
+Can we create multiple IOC container in Spring application?
+
+ServletContext - ServletContext is the object created by Servlet Container to share initial parameters or configuration information to the whole application.
+Example: Suppose, the name of one’s job portal is “NewWebsite.tg”. Showing the website name at the top of webpages delivered by different servlets, one needs to store the website name in every servlet inviting redundancy. Since the information shared by ServletContext can be accessed by every Servlet, it is better to go with ServletContext and retrieve the website name using getServletContext.getInitParameter(“Name”) whenever required.
+
+Q - How to start Spring boot application.
+Q - What happens when spring boot application starts?
+
+Q - How to stop a microservice or application once it completes its task.
+
+Q - In 100% code driven configuration in spring boot, we do need to change the code if we want to change the configuration
