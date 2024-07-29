@@ -1,0 +1,370 @@
+**********************************************************************************************************************************************************************************************************************************
+Generics in Java
+
+Generics means parameterized types. The idea is to allow type (Integer, String, … etc., and user-defined types) to be a parameter to methods, classes, and interfaces. Using Generics, it is possible to create classes that work with different data types. An entity such as class, interface, or method that operates on a parameterized type is a generic entity.
+
+Generics in Java provide a way to create classes, interfaces, and methods that can work with different data types in a type-safe manner. They allow you to write code that is more reusable and avoids casting errors at runtime. Generics enable you to define classes and methods with placeholder types that are determined at compile time based on the type of data you work with. This ensures type safety and eliminates the need for explicit casting.
+
+Types of Java Generics
+
+
+Generic Classes: A generic class is implemented exactly like a non-generic class. The only difference is that it contains a type parameter section. There can be more than one type of parameter, separated by a comma. The classes, which accept one or more parameters, ​are known as parameterized classes or parameterized types.
+
+// To create an instance of generic class 
+BaseType <Type> obj = new BaseType <Type>()
+
+Note: In Parameter type we can not use primitives like ‘int’,’char’ or ‘double’.
+
+class Box<T> {
+    private T contents;
+
+    public void setContents(T contents) {
+        this.contents = contents;
+    }
+
+    public T getContents() {
+        return contents;
+    }
+}
+
+public class GenericsExample {
+    public static void main(String[] args) {
+        // Creating a Box for Integer
+        Box<Integer> integerBox = new Box<>();
+        integerBox.setContents(42);
+        int intValue = integerBox.getContents();
+        System.out.println("Integer value: " + intValue);
+
+        // Creating a Box for String
+        Box<String> stringBox = new Box<>();
+        stringBox.setContents("Hello, Generics!");
+        String stringValue = stringBox.getContents();
+        System.out.println("String value: " + stringValue);
+    }
+}
+
+
+
+// Java program to show multiple
+// type parameters in Java Generics
+
+// We use < > to specify Parameter type
+class Test<T, U>
+{
+	T obj1; // An object of type T
+	U obj2; // An object of type U
+
+	// constructor
+	Test(T obj1, U obj2)
+	{
+		this.obj1 = obj1;
+		this.obj2 = obj2;
+	}
+
+	// To print objects of T and U
+	public void print()
+	{
+		System.out.println(obj1);
+		System.out.println(obj2);
+	}
+}
+
+// Driver class to test above
+class Main
+{
+	public static void main (String[] args)
+	{
+		Test <String, Integer> obj =
+			new Test<String, Integer>("GfG", 15);
+
+		obj.print();
+	}
+}
+
+
+Generic Method: Generic Java method takes a parameter and returns some value after performing a task. It is exactly like a normal function, however, a generic method has type parameters that are cited by actual type. This allows the generic method to be used in a more general way. The compiler takes care of the type of safety which enables programmers to code easily since they do not have to perform long, individual type castings.
+
+// Java program to show working of user defined
+// Generic functions
+
+class Test {
+	// A Generic method example
+	static <T> void genericDisplay(T element)
+	{
+		System.out.println(element.getClass().getName()
+						+ " = " + element);
+	}
+
+	// Driver method
+	public static void main(String[] args)
+	{
+		// Calling generic method with Integer argument
+		genericDisplay(11);
+
+		// Calling generic method with String argument
+		genericDisplay("GeeksForGeeks");
+
+		// Calling generic method with double argument
+		genericDisplay(1.0);
+	}
+}
+
+
+Generics Work Only with Reference Types: 
+When we declare an instance of a generic type, the type argument passed to the type parameter must be a reference type. We cannot use primitive data types like int, char.
+Test<int> obj = new Test<int>(20); 
+The above line results in a compile-time error that can be resolved using type wrappers to encapsulate a primitive type. 
+
+But primitive type arrays can be passed to the type parameter because arrays are reference types.
+ArrayList<int[]> a = new ArrayList<>();
+
+------------------------------------------------------------------------------------------------------------------------
+Generic Types Differ Based on Their Type Arguments: 
+// Java program to show working
+// of user-defined Generic classes
+
+// We use < > to specify Parameter type
+class Test<T> {
+	// An object of type T is declared
+	T obj;
+	Test(T obj) { this.obj = obj; } // constructor
+	public T getObject() { return this.obj; }
+}
+
+// Driver class to test above
+class Main {
+	public static void main(String[] args)
+	{
+		// instance of Integer type
+		Test<Integer> iObj = new Test<Integer>(15);
+		System.out.println(iObj.getObject());
+
+		// instance of String type
+		Test<String> sObj
+			= new Test<String>("GeeksForGeeks");
+		System.out.println(sObj.getObject());
+		iObj = sObj; // This results an error
+	}
+}
+
+
+Output: 
+
+error:
+ incompatible types:
+ Test cannot be converted to Test 
+Even though iObj and sObj are of type Test, they are the references to different types because their type parameters differ. Generics add type safety through this and prevent errors.
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+Type Parameters in Java Generics
+The type parameters naming conventions are important to learn generics thoroughly. The common type parameters are as follows:
+T – Type
+E – Element
+K – Key
+N – Number
+V – Value
+
+Advantages of Generics: 
+Programs that use Generics has got many benefits over non-generic code. 
+1. Code Reuse: We can write a method/class/interface once and use it for any type we want.
+2. Type Safety: Generics make errors to appear compile time than at run time (It’s always better to know problems in your code at compile time rather than making your code fail at run time). Suppose you want to create an ArrayList that store name of students, and if by mistake the programmer adds an integer object instead of a string, the compiler allows it. But, when we retrieve this data from ArrayList, it causes problems at runtime.
+
+When defining ArrayList, we can specify that this list can take only String objects.
+
+// Using Java Generics converts run time exceptions into
+// compile time exception.
+import java.util.*;
+
+class Test
+{
+	public static void main(String[] args)
+	{
+		// Creating a an ArrayList with String specified
+		ArrayList <String> al = new ArrayList<String> ();
+
+		al.add("Sachin");
+		al.add("Rahul");
+
+		// Now Compiler doesn't allow this
+		al.add(10);
+
+		String s1 = (String)al.get(0);
+		String s2 = (String)al.get(1);
+		String s3 = (String)al.get(2);
+	}
+}
+
+3. Individual Type Casting is not needed: If we do not use generics, then, in the above example, every time we retrieve data from ArrayList, we have to typecast it. Typecasting at every retrieval operation is a big headache. If we already know that our list only holds string data, we need not typecast it every time.
+
+// We don't need to typecast individual members of ArrayList
+
+import java.util.*;
+
+class Test {
+	public static void main(String[] args)
+	{
+		// Creating a an ArrayList with String specified
+		ArrayList<String> al = new ArrayList<String>();
+
+		al.add("Sachin");
+		al.add("Rahul");
+
+		// Typecasting is not needed
+		String s1 = al.get(0);
+		String s2 = al.get(1);
+	}
+}
+
+
+
+4. Generics Promotes Code Reusability: With the help of generics in Java, we can write code that will work with different types of data
+Let’s say we want to Sort the array elements of various data types like int, char, String etc.
+Basically we will be needing different functions for different data types.
+For simplicity, we will be using Bubble sort.
+But by using Generics, we can achieve the code reusability feature.
+
+public class GFG {
+
+	public static void main(String[] args)
+	{
+
+		Integer[] a = { 100, 22, 58, 41, 6, 50 };
+
+		Character[] c = { 'v', 'g', 'a', 'c', 'x', 'd', 't' };
+
+		String[] s = { "Virat", "Rohit", "Abhinay", "Chandu","Sam", "Bharat", "Kalam" };
+
+		System.out.print("Sorted Integer array : ");
+		sort_generics(a);
+
+		System.out.print("Sorted Character array : ");
+		sort_generics(c);
+
+		System.out.print("Sorted String array : ");
+		sort_generics(s);
+	
+	}
+
+	public static <T extends Comparable<T> > void sort_generics(T[] a)
+	{
+	
+		//As we are comparing the Non-primitive data types
+		//we need to use Comparable class
+	
+		//Bubble Sort logic
+		for (int i = 0; i < a.length - 1; i++) {
+
+			for (int j = 0; j < a.length - i - 1; j++) {
+
+				if (a[j].compareTo(a[j + 1]) > 0) {
+
+					swap(j, j + 1, a);
+				}
+			}
+		}
+
+		// Printing the elements after sorted
+
+		for (T i : a)
+		{
+			System.out.print(i + ", ");
+		}
+		System.out.println();
+	
+	}
+
+	public static <T> void swap(int i, int j, T[] a)
+	{
+		T t = a[i];
+		a[i] = a[j];
+		a[j] = t;
+	}
+
+}
+
+
+
+5. Implementing Generic Algorithms: By using generics, we can implement algorithms that work on different types of objects, and at the same, they are type-safe too.
+
+
+
+**********************************************************************************************************************************************************************************************************************************
+Java object creation and initialization
+
+
+In Java, you can create and initialize objects using several methods:
+
+1. **Using Constructors:** Most commonly, objects are created and initialized using constructors. Constructors are special methods that are used to initialize object properties and set their initial state.
+
+   Example:
+   ```java
+   MyClass obj = new MyClass(); // Using a no-argument constructor
+   MyClass obj2 = new MyClass(42); // Using a parameterized constructor
+   ```
+
+2. **Using Object Initialization Blocks:** You can use instance initialization blocks (also called instance initializers) to initialize instance variables when an object is created. These blocks are executed before constructors.
+
+   Example:
+   ```java
+   class MyClass {
+       int x;
+       {
+           x = 10; // Initialization block
+       }
+   }
+   
+   MyClass obj = new MyClass(); // Object is initialized with x = 10
+   ```
+
+3. **Using Static Initializers:** Static initialization blocks are used to initialize static variables when the class is loaded into memory.
+
+   Example:
+   ```java
+   class MyClass {
+       static int y;
+       static {
+           y = 20; // Static initialization block
+       }
+   }
+   
+   // Access the static variable without creating an object
+   int value = MyClass.y; // value is 20
+   ```
+
+4. **Using Factory Methods:** You can create objects using factory methods, which are methods in a class responsible for creating and returning instances of that class.
+
+   Example:
+   ```java
+   public class MyFactory {
+       public static MyClass createObject() {
+           return new MyClass();
+       }
+   }
+   
+   MyClass obj = MyFactory.createObject();
+   ```
+
+5. **Using Object Cloning:** You can create a new object that is a copy of an existing object using object cloning. This is done using the `clone()` method.
+
+   Example:
+   ```java
+   MyClass original = new MyClass();
+   MyClass copy = (MyClass) original.clone();
+   ```
+
+6. **Using Deserialization:** You can create an object by deserializing it from a stream of bytes. This is often used to recreate objects from files or network data.
+
+   Example:
+   ```java
+   FileInputStream fileIn = new FileInputStream("object.ser");
+   ObjectInputStream in = new ObjectInputStream(fileIn);
+   MyClass obj = (MyClass) in.readObject();
+   in.close();
+   fileIn.close();
+   ```
+
+These are some common ways to create and initialize Java objects. The choice of which method to use depends on your specific requirements and design considerations. Constructors are the most common and fundamental way to create objects, but the other methods provide additional flexibility in certain situations.
+
+**********************************************************************************************************************************************************************************************************************************

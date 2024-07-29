@@ -1,0 +1,1560 @@
+ **********************************************************************************************************************************************************************************************************************************
+
+https://www.geeksforgeeks.org/java-collection-tutorial/?ref=lbp
+
+Collection framwork-
+
+Collection interface
+|_____Set -> HashSet, LinkedHashSet, (SortedSet)->TreeSet
+|_____List -> ArrayList, LinkedList, Stack, Vector
+|_____Queue -> ArrayDeque, LinkedList, PriorityQueue
+
+
+Map
+|_____HashTable
+|_____LinkedHashMap
+|_____HashMap
+|_____SortedMap___TreeMap
+
+
+Object
+|_____Arrays
+|_____Collections
+
+Iterator
+|_____ListIterator
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+In Java, a "Set" is a part of the Java Collections Framework and represents a collection that doesn't allow duplicate elements. It's an interface that is implemented by various classes, each with its own characteristics. Here's an overview of the Set interface and some of its commonly used implementations:
+
+1. **Set Interface**: The `Set` interface extends the `Collection` interface and does not allow duplicate elements. It defines the basic methods for adding, removing, and querying elements.
+
+    ```java
+    import java.util.Set;
+    
+    Set<E> mySet = new HashSet<>();  // Instantiate a Set using HashSet
+    ```
+
+2. **HashSet**: This is one of the most commonly used implementations of the Set interface. It uses a hash table to store elements, providing constant-time performance for basic operations.
+
+    ```java
+    import java.util.HashSet;
+    
+    Set<String> myHashSet = new HashSet<>();
+    ```
+
+3. **LinkedHashSet**: This implementation maintains the order of elements as they were inserted. It uses a hash table for storage along with a linked list to maintain the order.
+
+    ```java
+    import java.util.LinkedHashSet;
+    
+    Set<Integer> myLinkedHashSet = new LinkedHashSet<>();
+    ```
+
+4. **TreeSet**: A TreeSet stores elements in a sorted order (according to their natural ordering or a specified comparator). It uses a red-black tree for efficient storage.
+
+    ```java
+    import java.util.TreeSet;
+    
+    Set<Double> myTreeSet = new TreeSet<>();
+    ```
+
+The `Set` interface in Java provides several methods for working with sets. Here are some of the important methods defined by the `Set` interface and commonly used in its implementations:
+
+1. **Adding Elements**:
+   - `boolean add(E element)`: Adds the specified element to the set if it's not already present. Returns `true` if the element was added, and `false` if it was already present.
+
+2. **Removing Elements**:
+   - `boolean remove(Object element)`: Removes the specified element from the set if it's present. Returns `true` if the element was removed, and `false` if it was not found.
+   - `void clear()`: Removes all elements from the set, leaving it empty.
+
+3. **Checking for Element Existence**:
+   - `boolean contains(Object element)`: Returns `true` if the set contains the specified element, and `false` otherwise.
+   - `boolean isEmpty()`: Returns `true` if the set is empty, and `false` if it contains elements.
+
+4. **Size and Information**:
+   - `int size()`: Returns the number of elements in the set.
+   - `Object[] toArray()`: Returns an array containing all the elements in the set.
+
+5. **Iteration**:
+   - `Iterator<E> iterator()`: Returns an iterator over the elements in the set.
+
+It's important to note that the `Set` interface inherits the methods from the `Collection` interface, which provides additional methods for working with collections, such as `addAll`, `removeAll`, `retainAll`, and more.
+
+Here's a simple example demonstrating the use of some of these methods:
+
+```java
+import java.util.HashSet;
+import java.util.Set;
+
+public class SetMethodsExample {
+    public static void main(String[] args) {
+        Set<String> colors = new HashSet<>();
+
+        colors.add("Red");
+        colors.add("Green");
+        colors.add("Blue");
+
+        System.out.println("Size of set: " + colors.size()); // Output: 3
+
+        System.out.println("Contains Green: " + colors.contains("Green")); // Output: true
+        System.out.println("Contains Yellow: " + colors.contains("Yellow")); // Output: false
+
+        colors.remove("Red");
+        System.out.println("After removing Red: " + colors); // Output: [Green, Blue]
+
+        System.out.println("Is set empty: " + colors.isEmpty()); // Output: false
+
+        colors.clear();
+        System.out.println("After clearing: " + colors); // Output: []
+
+        System.out.println("Is set empty: " + colors.isEmpty()); // Output: true
+    }
+}
+```
+
+In this example, we create a `HashSet` called `colors` to store color names. We use various methods like `add`, `contains`, `remove`, `isEmpty`, and `clear` to manipulate and query the set.
+
+1. **HashSet**:
+   - `HashSet` uses a hash table to store elements. It offers constant-time performance for basic operations like adding, removing, and querying elements. However, it does not maintain the order of insertion.
+
+Example:
+```java
+import java.util.HashSet;
+import java.util.Set;
+
+public class HashSetExample {
+    public static void main(String[] args) {
+        Set<String> fruits = new HashSet<>();
+
+        fruits.add("Apple");
+        fruits.add("Banana");
+        fruits.add("Orange");
+        fruits.add("Apple"); // Duplicate element
+
+        System.out.println(fruits); // Output: [Banana, Orange, Apple]
+    }
+}
+```
+
+2. **LinkedHashSet**:
+   - `LinkedHashSet` extends `HashSet` and maintains the order of elements as they were inserted. It uses a hash table for storage along with a doubly-linked list to preserve the insertion order.
+
+Example:
+```java
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+public class LinkedHashSetExample {
+    public static void main(String[] args) {
+        Set<String> colors = new LinkedHashSet<>();
+
+        colors.add("Red");
+        colors.add("Green");
+        colors.add("Blue");
+        colors.add("Red"); // Duplicate element
+
+        System.out.println(colors); // Output: [Red, Green, Blue]
+    }
+}
+```
+
+3. **TreeSet**:
+   - `TreeSet` is implemented using a self-balancing binary search tree (usually a red-black tree). It maintains the elements in a sorted order, either according to their natural ordering or based on a specified comparator.
+
+Example:
+```java
+import java.util.TreeSet;
+import java.util.Set;
+
+public class TreeSetExample {
+    public static void main(String[] args) {
+        Set<Integer> numbers = new TreeSet<>();
+
+        numbers.add(5);
+        numbers.add(2);
+        numbers.add(8);
+        numbers.add(2); // Duplicate element
+
+        System.out.println(numbers); // Output: [2, 5, 8]
+    }
+}
+```
+
+Here's the time and space complexity for the three commonly used `Set` implementations: `HashSet`, `LinkedHashSet`, and `TreeSet`.
+
+1. **HashSet**:
+   - Time Complexity:
+     - Average Case:
+       - Insertion: O(1)
+       - Deletion: O(1)
+       - Lookup: O(1)
+     - Worst Case:
+       - Insertion: O(n) due to potential resizing
+       - Deletion: O(n) due to potential resizing
+       - Lookup: O(n) due to potential collisions
+   - Space Complexity: O(n), where n is the number of elements stored in the set.
+
+2. **LinkedHashSet**:
+   - Time Complexity:
+     - Average Case:
+       - Insertion: O(1)
+       - Deletion: O(1)
+       - Lookup: O(1)
+     - Worst Case:
+       - Insertion: O(n) due to potential resizing
+       - Deletion: O(n) due to potential resizing
+       - Lookup: O(n) due to potential collisions
+   - Space Complexity: O(n), where n is the number of elements stored in the set.
+
+3. **TreeSet**:
+   - Time Complexity:
+     - Insertion: O(log n)
+     - Deletion: O(log n)
+     - Lookup: O(log n)
+     - Finding Minimum/Maximum: O(1)
+     - Range Queries (subset): O(k + log n), where k is the number of elements in the subset
+   - Space Complexity: O(n), where n is the number of elements stored in the set.
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+List in java
+
+The `List` interface is a fundamental part of the Java Collections Framework and is implemented by several classes that provide different ways to store and manage ordered collections of elements. Here are some of the important classes that implement the `List` interface:
+
+1. **ArrayList**:
+   - `ArrayList` is a dynamic array implementation of the `List` interface.
+   - Provides fast constant-time access and reasonable insertion/deletion times.
+   - Not suitable for frequent insertion/deletion operations due to potential array resizing.
+
+Example:
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+        List<String> colors = new ArrayList<>();
+
+        colors.add("Red");
+        colors.add("Green");
+        colors.add("Blue");
+
+        System.out.println(colors); // Output: [Red, Green, Blue]
+    }
+}
+```
+
+2. **LinkedList**:
+   - `LinkedList` is a doubly-linked list implementation of the `List` interface.
+   - Provides fast insertion/deletion times, especially for frequent changes.
+   - Slower random access compared to `ArrayList`.
+
+Example:
+```java
+import java.util.LinkedList;
+import java.util.List;
+
+public class LinkedListExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = new LinkedList<>();
+
+        numbers.add(5);
+        numbers.add(10);
+        numbers.add(15);
+
+        System.out.println(numbers); // Output: [5, 10, 15]
+    }
+}
+```
+
+3. **Vector**:
+   - `Vector` is a synchronized version of `ArrayList`, which means it's thread-safe.
+   - Due to synchronization, it can be slower in a single-threaded environment.
+   - Generally, `ArrayList` is preferred over `Vector` unless you specifically need thread safety.
+
+Example:
+```java
+import java.util.Vector;
+import java.util.List;
+
+public class VectorExample {
+    public static void main(String[] args) {
+        List<String> animals = new Vector<>();
+
+        animals.add("Cat");
+        animals.add("Dog");
+        animals.add("Elephant");
+
+        System.out.println(animals); // Output: [Cat, Dog, Elephant]
+    }
+}
+```
+
+
+
+The `Stack` class in Java is a part of the Java Collections Framework and provides a last-in, first-out (LIFO) stack data structure. It's implemented as a subclass of the `Vector` class and provides methods for pushing (adding) and popping (removing) elements from the top of the stack. While the `Stack` class is a part of the Java Collections Framework, it's generally recommended to use the more modern `Deque` (double-ended queue) interface, specifically the `LinkedList` implementation, for stack-like behavior.
+
+Here's a basic overview of the `Stack` class:
+
+1. **Methods**:
+   - `void push(E item)`: Adds an item to the top of the stack.
+   - `E pop()`: Removes and returns the item from the top of the stack.
+   - `E peek()`: Returns the item at the top of the stack without removing it.
+   - `boolean empty()`: Returns `true` if the stack is empty, otherwise `false`.
+   - `int search(Object item)`: Returns the 1-based position of an item in the stack, counting from the top. Returns `-1` if the item is not found.
+
+Example:
+```java
+import java.util.Stack;
+
+public class StackExample {
+    public static void main(String[] args) {
+        Stack<String> stack = new Stack<>();
+
+        stack.push("First");
+        stack.push("Second");
+        stack.push("Third");
+
+        System.out.println("Top item: " + stack.peek()); // Output: Third
+
+        while (!stack.isEmpty()) {
+            System.out.println("Popped: " + stack.pop());
+        }
+    }
+}
+```
+
+In this example, we use the `Stack` class to create a stack of strings. We demonstrate pushing items onto the stack using the `push` method and popping items off the stack using the `pop` method. We also use the `peek` method to check the top item without removing it, and the `isEmpty` method to check if the stack is empty.
+
+It's important to note that while the `Stack` class is a useful part of Java, the `Deque` interface and its `LinkedList` implementation provide similar stack functionality with additional methods, and they're generally preferred in modern Java programming due to their versatility and improved performance.
+
+
+Sure! Here's an example that demonstrates the usage of several important methods provided by the `List` interface:
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListExample {
+    public static void main(String[] args) {
+        List<String> countries = new ArrayList<>();
+
+        // Adding elements
+        countries.add("USA");
+        countries.add("Canada");
+        countries.add("India");
+
+        System.out.println("List after adding elements: " + countries); // Output: [USA, Canada, India]
+
+        // Getting elements
+        String secondCountry = countries.get(1);
+        System.out.println("Second country: " + secondCountry); // Output: Canada
+
+        // Setting elements
+        countries.set(0, "United States");
+        System.out.println("List after setting element: " + countries); // Output: [United States, Canada, India]
+
+        // Removing elements
+        String removedCountry = countries.remove(2);
+        System.out.println("Removed country: " + removedCountry); // Output: India
+        System.out.println("List after removing element: " + countries); // Output: [United States, Canada]
+
+        // Finding index of an element
+        int canadaIndex = countries.indexOf("Canada");
+        System.out.println("Index of Canada: " + canadaIndex); // Output: 1
+
+        // Checking if the list is empty
+        boolean isEmpty = countries.isEmpty();
+        System.out.println("Is list empty: " + isEmpty); // Output: false
+    }
+}
+```
+
+In this example, we create an `ArrayList` called `countries` to store country names. We use various methods such as `add`, `get`, `set`, `remove`, `indexOf`, and `isEmpty` to demonstrate adding, retrieving, updating, and removing elements from the list. The example showcases the versatility of the `List` interface and its methods for managing collections of elements.
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+In Java, a "Queue" is a part of the Java Collections Framework that represents a collection of elements in which elements are processed in a first-in, first-out (FIFO) manner. Queues are commonly used for implementing scenarios like task scheduling, event handling, and more. The `Queue` interface provides methods for adding, removing, and inspecting elements, and it has several implementations with varying characteristics. Here are some key points about the `Queue` interface and its implementations:
+
+1. **Queue Interface**: The `Queue` interface extends the `Collection` interface and introduces methods for adding, removing, and inspecting elements at both ends of the queue.
+   - `boolean add(E element)`: Adds the element to the queue. Throws an exception if the element cannot be added.
+   - `boolean offer(E element)`: Adds the element to the queue. Returns `false` if the element cannot be added.
+   - `E remove()`: Removes and returns the element at the front of the queue. Throws an exception if the queue is empty.
+   - `E poll()`: Removes and returns the element at the front of the queue. Returns `null` if the queue is empty.
+   - `E element()`: Returns the element at the front of the queue without removing it. Throws an exception if the queue is empty.
+   - `E peek()`: Returns the element at the front of the queue without removing it. Returns `null` if the queue is empty.
+
+2. **LinkedList as a Queue**:
+   - `LinkedList` can be used as a basic implementation of a `Queue`.
+   - You can use methods such as `offer`, `poll`, and `peek` to treat `LinkedList` as a queue.
+
+Example:
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class LinkedListQueueExample {
+    public static void main(String[] args) {
+        // Create a LinkedList to be used as a queue
+        Queue<String> taskQueue = new LinkedList<>();
+
+        // Adding tasks to the queue
+        taskQueue.offer("Task1");
+        taskQueue.offer("Task2");
+        taskQueue.offer("Task3");
+
+        // Display the tasks in the queue
+        System.out.println("Initial Queue: " + taskQueue);
+
+        // Processing tasks
+        while (!taskQueue.isEmpty()) {
+            // Peek at the front task without removing it
+            String currentTask = taskQueue.peek();
+            System.out.println("Processing: " + currentTask);
+
+            // Remove the front task from the queue
+            taskQueue.poll();
+        }
+
+        // Queue is now empty
+        System.out.println("Final Queue: " + taskQueue);
+    }
+}
+
+
+`PriorityQueue` is an implementation of the `Queue` interface in Java that maintains its elements in a priority order. Elements are ordered either by their natural ordering or by a custom comparator that you can provide. The element at the front of the queue is the one with the highest priority, based on the defined ordering. It's commonly used in scenarios where you need to process elements with varying levels of priority.
+
+Here's how you can use `PriorityQueue` in Java:
+
+1. **Creating a PriorityQueue**:
+   - You can create a `PriorityQueue` with the default natural ordering of elements or by specifying a custom comparator.
+
+2. **Adding Elements (`offer`)**:
+   - You can add elements to the `PriorityQueue` using the `offer` method.
+
+3. **Removing Elements (`poll`)**:
+   - The `poll` method removes and returns the element with the highest priority from the front of the queue.
+
+4. **Inspecting the Front Element (`peek`)**:
+   - The `peek` method retrieves the element with the highest priority without removing it.
+
+Example:
+
+```java
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+public class PriorityQueueExample {
+    public static void main(String[] args) {
+        // Create a PriorityQueue with natural ordering
+        Queue<Integer> priorityQueue = new PriorityQueue<>();
+
+        // Add elements to the PriorityQueue
+        priorityQueue.offer(5);
+        priorityQueue.offer(2);
+        priorityQueue.offer(8);
+
+        // Process elements with highest priority first
+        while (!priorityQueue.isEmpty()) {
+            int highestPriority = priorityQueue.poll();
+            System.out.println("Processing: " + highestPriority);
+        }
+    }
+}
+```
+
+In this example:
+- We create a `PriorityQueue` named `priorityQueue` using the default natural ordering of elements.
+- We add three elements (5, 2, 8) to the queue using the `offer` method.
+- We use a `while` loop to process elements from the queue:
+  - We use the `poll` method to remove and retrieve the element with the highest priority (smallest value in this case) and print it.
+
+Remember that `PriorityQueue` is not limited to numbers; it can be used with objects of any class as long as you define the appropriate ordering (either through their natural ordering or a custom comparator). The element at the front of the queue will always be the one with the highest priority according to the ordering criterion.
+```
+
+These are some examples of how to use the `Queue` interface and its implementations in Java. Depending on your use case, you can choose between basic FIFO behavior using `LinkedList` or prioritize elements using `PriorityQueue`.
+
+
+
+
+ArrayDeque
+`ArrayDeque` (Array Double-Ended Queue) is a versatile implementation of the `Deque` (Double-Ended Queue) interface in Java. It provides a dynamic array-based data structure that supports adding and removing elements from both ends of the queue efficiently. Unlike other queue implementations, `ArrayDeque` allows elements to be added or removed from both the front and the back with O(1) time complexity, providing fast performance for various use cases.
+
+Here's how you can use `ArrayDeque` in Java:
+
+1. **Creating an ArrayDeque**:
+   - You can create an `ArrayDeque` using its default constructor.
+
+2. **Adding Elements (`add`, `addFirst`, `addLast`)**:
+   - The `add` method adds elements to the back of the queue.
+   - The `addFirst` method adds elements to the front of the queue.
+   - The `addLast` method also adds elements to the back of the queue (same as `add`).
+
+3. **Removing Elements (`remove`, `removeFirst`, `removeLast`)**:
+   - The `remove` method removes and returns the element from the front of the queue.
+   - The `removeFirst` method is equivalent to `remove`.
+   - The `removeLast` method removes and returns the element from the back of the queue.
+
+4. **Inspecting the Front and Back Elements (`peek`, `peekFirst`, `peekLast`)**:
+   - The `peek` method retrieves the element from the front of the queue without removing it.
+   - The `peekFirst` method is equivalent to `peek`.
+   - The `peekLast` method retrieves the element from the back of the queue without removing it.
+5. Getting the Size and Checking Empty:
+   - int size(): Returns the number of elements in the deque.
+   - boolean isEmpty(): Returns true if the deque is empty, otherwise false.
+
+Example:
+
+```java
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+public class ArrayDequeExample {
+    public static void main(String[] args) {
+        // Create an ArrayDeque
+        Deque<String> tasks = new ArrayDeque<>();
+
+        // Adding tasks to the front and back of the deque
+        tasks.addLast("Task1");
+        tasks.addFirst("Task0");
+        tasks.addLast("Task2");
+
+        // Process tasks in the deque
+        while (!tasks.isEmpty()) {
+            String currentTask = tasks.pollFirst(); // Equivalent to removeFirst
+            System.out.println("Processing: " + currentTask);
+        }
+    }
+}
+```
+
+In this example:
+- We create an `ArrayDeque` named `tasks`.
+- We add tasks to the front and back of the deque using the `addLast` and `addFirst` methods.
+- We use a `while` loop to process tasks from the deque using the `pollFirst` method.
+- The `pollFirst` method removes and returns the element from the front of the deque.
+
+`ArrayDeque` is useful for scenarios where you need to efficiently manage elements at both ends of the queue, such as implementing a queue, stack, or any other data structure that requires adding/removing elements from front and back.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Map in java
+
+In Java, a "Map" is a part of the Java Collections Framework that represents a collection of key-value pairs. Each key in a map is associated with a single value, and you can use the key to retrieve the corresponding value. Maps are used to store and retrieve data based on a unique identifier (key), which allows for efficient lookups and associations between related information.
+
+The `Map` interface provides methods for adding, retrieving, updating, and removing key-value pairs. There are several implementations of the `Map` interface in Java, each with its own characteristics and use cases. Here are some key points about the `Map` interface and its implementations:
+
+1. **Map Interface**: The `Map` interface provides methods for basic operations on key-value pairs.
+   - `V put(K key, V value)`: Associates the specified value with the specified key in the map.
+   - `V get(Object key)`: Returns the value associated with the specified key, or `null` if the key is not found.
+   - `V remove(Object key)`: Removes the key-value pair with the specified key from the map.
+
+2. **HashMap**:
+   - `HashMap` is an implementation of the `Map` interface that stores key-value pairs in an unordered manner.
+   - It provides constant-time average complexity for basic operations (insertion, retrieval, deletion) on average.
+   - It does not guarantee any specific order of the elements.
+- It provides fast average-time complexity for basic operations like insertion, retrieval, and deletion.
+- Elements are not ordered by insertion or any particular order; the ordering is not guaranteed.
+- It allows `null` keys and values.
+- `HashMap` is not synchronized by default. For synchronized version, you can use `Collections.synchronizedMap()`.
+
+**Methods**:
+- `V put(K key, V value)`: Associates the specified value with the specified key in the map.
+- `V get(Object key)`: Returns the value to which the specified key is mapped, or `null` if the key is not found.
+- `V remove(Object key)`: Removes the mapping for the specified key from the map.
+- `boolean containsKey(Object key)`: Returns `true` if the map contains the specified key.
+- `boolean containsValue(Object value)`: Returns `true` if the map contains the specified value.
+- `int size()`: Returns the number of key-value pairs in the map.
+- `boolean isEmpty()`: Returns `true` if the map contains no key-value pairs.
+
+Here's a detailed example of using `HashMap`:
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        // Create a HashMap to store student names and their scores
+        Map<String, Integer> studentScores = new HashMap<>();
+
+        // Adding key-value pairs
+        studentScores.put("Alice", 85);
+        studentScores.put("Bob", 92);
+        studentScores.put("Carol", 78);
+
+        // Retrieving values using keys
+        int aliceScore = studentScores.get("Alice");
+        System.out.println("Alice's score: " + aliceScore);
+
+        // Checking if a key exists
+        boolean hasBob = studentScores.containsKey("Bob");
+        System.out.println("Does map have Bob? " + hasBob);
+
+        // Updating a value
+        studentScores.put("Bob", 95);
+
+        // Removing a key-value pair
+        studentScores.remove("Carol");
+
+        // Checking the size and emptiness of the map
+        System.out.println("Number of students: " + studentScores.size());
+        System.out.println("Is map empty? " + studentScores.isEmpty());
+
+        // Iterating through the map
+        for (Map.Entry<String, Integer> entry : studentScores.entrySet()) {
+            String name = entry.getKey();
+            int score = entry.getValue();
+            System.out.println(name + ": " + score);
+        }
+    }
+}
+```
+
+In this example:
+- We create a `HashMap` named `studentScores` to store student names as keys and their scores as values.
+- We use various methods to add, retrieve, update, and remove key-value pairs.
+- We demonstrate how to check for the existence of keys using `containsKey`.
+- We iterate through the map using a `for` loop and `entrySet()` to access both keys and values.
+
+Remember that `HashMap` is a versatile data structure for associating keys with values efficiently. It's commonly used in various scenarios such as caching, data indexing, and look-up tables.
+
+3. **LinkedHashMap**:
+   - `LinkedHashMap` is similar to `HashMap` but maintains the order of insertion.
+   - It provides slightly slower performance than `HashMap`, but it maintains the order of the elements.
+- `LinkedHashMap` is an implementation of the `Map` interface that maintains the order of elements based on their insertion order.
+- Like `HashMap`, it uses a hash table for storing key-value pairs, but it also maintains a linked list to preserve insertion order.
+- It provides the same basic methods as `HashMap`.
+
+**Methods and Features**:
+- `V put(K key, V value)`: Adds a key-value pair to the map, maintaining insertion order.
+- `V get(Object key)`: Retrieves the value associated with the specified key.
+- `V remove(Object key)`: Removes the mapping for the specified key.
+- `boolean containsKey(Object key)`: Checks if the map contains the specified key.
+- `int size()`: Returns the number of key-value pairs in the map.
+- `boolean isEmpty()`: Returns `true` if the map contains no key-value pairs.
+
+Here's a detailed example of using `LinkedHashMap`:
+
+```java
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class LinkedHashMapExample {
+    public static void main(String[] args) {
+        // Create a LinkedHashMap to store month names and their corresponding days
+        Map<String, Integer> monthDays = new LinkedHashMap<>();
+
+        // Adding key-value pairs
+        monthDays.put("January", 31);
+        monthDays.put("February", 28);
+        monthDays.put("March", 31);
+
+        // Retrieving values using keys
+        int februaryDays = monthDays.get("February");
+        System.out.println("Days in February: " + februaryDays);
+
+        // Checking if a key exists
+        boolean hasApril = monthDays.containsKey("April");
+        System.out.println("Does map have April? " + hasApril);
+
+        // Updating a value
+        monthDays.put("February", 29);
+
+        // Removing a key-value pair
+        monthDays.remove("March");
+
+        // Checking the size and emptiness of the map
+        System.out.println("Number of months: " + monthDays.size());
+        System.out.println("Is map empty? " + monthDays.isEmpty());
+
+        // Iterating through the map
+        for (Map.Entry<String, Integer> entry : monthDays.entrySet()) {
+            String month = entry.getKey();
+            int days = entry.getValue();
+            System.out.println(month + ": " + days + " days");
+        }
+    }
+}
+```
+
+In this example:
+- We create a `LinkedHashMap` named `monthDays` to store month names as keys and the corresponding number of days as values.
+- We use various methods to add, retrieve, update, and remove key-value pairs.
+- We demonstrate how to check for the existence of keys using `containsKey`.
+- We iterate through the map using a `for` loop and `entrySet()` to access both keys and values.
+- The insertion order is maintained in the map, which means that the output will display months in the order they were inserted.
+
+`LinkedHashMap` is useful when you need to maintain the order of elements based on their insertion order while still having efficient look-up capabilities. It's commonly used in scenarios where you need to iterate through the map in the order the elements were added.
+
+4. **TreeMap**:
+   - `TreeMap` is an implementation of the `Map` interface that maintains the elements in a sorted order based on their natural ordering or a custom comparator.
+   - It provides logarithmic-time complexity for basic operations, making it suitable for scenarios where ordering matters.
+- `TreeMap` is an implementation of the `Map` interface that maintains the elements in sorted order based on their natural ordering or a custom comparator.
+- It uses a red-black tree data structure to store the key-value pairs, which ensures that the elements are always ordered.
+- `TreeMap` is slower for insertion, retrieval, and deletion compared to `HashMap` or `LinkedHashMap`, but it provides efficient ordering.
+
+**Methods and Features**:
+- `V put(K key, V value)`: Associates the specified value with the specified key in the map. It maintains sorted order.
+- `V get(Object key)`: Returns the value to which the specified key is mapped.
+- `V remove(Object key)`: Removes the mapping for the specified key from the map.
+- `boolean containsKey(Object key)`: Checks if the map contains the specified key.
+- `int size()`: Returns the number of key-value pairs in the map.
+- `boolean isEmpty()`: Returns `true` if the map contains no key-value pairs.
+- `NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive)`: Returns a view of the portion of this map whose keys range from `fromKey` (inclusive) to `toKey` (inclusive).
+- `SortedMap<K, V> headMap(K toKey)`: Returns a view of the portion of this map whose keys are strictly less than `toKey`.
+- `SortedMap<K, V> tailMap(K fromKey)`: Returns a view of the portion of this map whose keys are greater than or equal to `fromKey`.
+
+Here's a detailed example of using `TreeMap`:
+
+```java
+import java.util.TreeMap;
+import java.util.Map;
+
+public class TreeMapExample {
+    public static void main(String[] args) {
+        // Create a TreeMap to store age and name pairs
+        TreeMap<Integer, String> ageNames = new TreeMap<>();
+
+        // Adding key-value pairs
+        ageNames.put(30, "Alice");
+        ageNames.put(25, "Bob");
+        ageNames.put(28, "Carol");
+
+        // Retrieving values using keys
+        String bobName = ageNames.get(25);
+        System.out.println("Name of person aged 25: " + bobName);
+
+        // Checking if a key exists
+        boolean hasAge40 = ageNames.containsKey(40);
+        System.out.println("Does map have age 40? " + hasAge40);
+
+        // Updating a value
+        ageNames.put(30, "Alicia");
+
+        // Removing a key-value pair
+        ageNames.remove(25);
+
+        // Checking the size and emptiness of the map
+        System.out.println("Number of entries: " + ageNames.size());
+        System.out.println("Is map empty? " + ageNames.isEmpty());
+
+        // Iterating through the map
+        for (Map.Entry<Integer, String> entry : ageNames.entrySet()) {
+            int age = entry.getKey();
+            String name = entry.getValue();
+            System.out.println(name + " is " + age + " years old");
+        }
+    }
+}
+```
+
+In this example:
+- We create a `TreeMap` named `ageNames` to store age as keys and corresponding names as values.
+- We use various methods to add, retrieve, update, and remove key-value pairs.
+- We demonstrate how to check for the existence of keys using `containsKey`.
+- We iterate through the map using a `for` loop and `entrySet()` to access both keys and values.
+- The elements are automatically sorted based on the natural ordering of keys (ages in this case).
+
+`TreeMap` is useful when you need to maintain a sorted order of elements based on keys. It's commonly used in scenarios where you need to retrieve elements in a particular order, such as maintaining a sorted directory or implementing a sorted data structure.
+
+
+5. **HashTable**:
+   - `HashTable` is an older implementation of the `Map` interface that is synchronized, making it thread-safe.
+   - It's generally less recommended than `HashMap` due to its synchronization overhead.
+Certainly! Let's delve into `HashTable` in more detail with an example that demonstrates its features and usage.
+
+**HashTable Overview**:
+- `HashTable` is an implementation of the `Map` interface that uses a hash table to store key-value pairs.
+- Like `HashMap`, it provides fast average-time complexity for basic operations, but it is synchronized, making it thread-safe.
+- It's similar to `HashMap`, but `HashTable` is less recommended due to its synchronization overhead and the availability of more efficient alternatives like `ConcurrentHashMap`.
+- `V put(K key, V value)`: Associates the specified value with the specified key in the map.
+- `V get(Object key)`: Returns the value to which the specified key is mapped.
+- `V remove(Object key)`: Removes the mapping for the specified key from the map.
+- `boolean containsKey(Object key)`: Checks if the map contains the specified key.
+- `int size()`: Returns the number of key-value pairs in the map.
+- `boolean isEmpty()`: Returns `true` if the map contains no key-value pairs.
+- `synchronized` methods: All the above methods are synchronized, making `HashTable` thread-safe.
+
+Here's a detailed example of using `HashTable`:
+
+```java
+import java.util.Hashtable;
+import java.util.Map;
+
+public class HashTableExample {
+    public static void main(String[] args) {
+        // Create a HashTable to store city and population pairs
+        Map<String, Integer> cityPopulations = new Hashtable<>();
+
+        // Adding key-value pairs
+        cityPopulations.put("New York", 8406000);
+        cityPopulations.put("Los Angeles", 3990456);
+        cityPopulations.put("Chicago", 2716000);
+
+        // Retrieving values using keys
+        int newYorkPopulation = cityPopulations.get("New York");
+        System.out.println("Population of New York: " + newYorkPopulation);
+
+        // Checking if a key exists
+        boolean hasCity = cityPopulations.containsKey("Chicago");
+        System.out.println("Does map have Chicago? " + hasCity);
+
+        // Updating a value
+        cityPopulations.put("Los Angeles", 4018000);
+
+        // Removing a key-value pair
+        cityPopulations.remove("Chicago");
+
+        // Checking the size and emptiness of the map
+        System.out.println("Number of cities: " + cityPopulations.size());
+        System.out.println("Is map empty? " + cityPopulations.isEmpty());
+
+        // Iterating through the map
+        for (Map.Entry<String, Integer> entry : cityPopulations.entrySet()) {
+            String city = entry.getKey();
+            int population = entry.getValue();
+            System.out.println(city + ": " + population + " people");
+        }
+    }
+}
+```
+
+In this example:
+- We create a `HashTable` named `cityPopulations` to store city names as keys and corresponding populations as values.
+- We use various methods to add, retrieve, update, and remove key-value pairs.
+- We demonstrate how to check for the existence of keys using `containsKey`.
+- We iterate through the map using a `for` loop and `entrySet()` to access both keys and values.
+
+Keep in mind that while `HashTable` is thread-safe, it comes with a performance overhead due to synchronization. If you're working with Java 5 or later, you might want to consider using `ConcurrentHashMap` for better concurrency support with lower synchronization overhead.
+
+
+
+
+
+`ConcurrentHashMap` in more detail with an example that demonstrates its features and usage.
+
+**ConcurrentHashMap Overview**:
+- `ConcurrentHashMap` is an implementation of the `ConcurrentMap` interface, which extends the `Map` interface.
+- It provides concurrent access to key-value pairs, making it suitable for multi-threaded applications.
+- Unlike `HashTable` or synchronized `HashMap`, `ConcurrentHashMap` allows multiple threads to read and modify the map concurrently with minimal locking.
+- ConcurrentHashMap is designed to be thread-safe. It provides a high level of concurrent access to its key-value pairs, allowing multiple threads to read and modify the map concurrently without causing data corruption or synchronization issues. This makes ConcurrentHashMap suitable for multi-threaded applications where concurrent access to a map is required.
+
+**Methods and Features**:
+- `V put(K key, V value)`: Associates the specified value with the specified key in the map.
+- `V get(Object key)`: Returns the value to which the specified key is mapped.
+- `V remove(Object key)`: Removes the mapping for the specified key from the map.
+- `boolean containsKey(Object key)`: Checks if the map contains the specified key.
+- `int size()`: Returns the number of key-value pairs in the map.
+- `boolean isEmpty()`: Returns `true` if the map contains no key-value pairs.
+- Concurrent Updates: `ConcurrentHashMap` provides methods like `putIfAbsent`, `replace`, and `remove` with atomicity for concurrent updates.
+
+Here's a detailed example of using `ConcurrentHashMap`:
+
+```java
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+
+public class ConcurrentHashMapExample {
+    public static void main(String[] args) {
+        // Create a ConcurrentHashMap to store user IDs and their corresponding names
+        Map<Integer, String> userIdNames = new ConcurrentHashMap<>();
+
+        // Adding key-value pairs
+        userIdNames.put(101, "Alice");
+        userIdNames.put(102, "Bob");
+        userIdNames.put(103, "Carol");
+
+        // Retrieving values using keys
+        String bobName = userIdNames.get(102);
+        System.out.println("Name of user ID 102: " + bobName);
+
+        // Checking if a key exists
+        boolean hasUserId = userIdNames.containsKey(103);
+        System.out.println("Does map have user ID 103? " + hasUserId);
+
+        // Updating a value
+        userIdNames.put(101, "Alicia");
+
+        // Removing a key-value pair
+        userIdNames.remove(102);
+
+        // Checking the size and emptiness of the map
+        System.out.println("Number of users: " + userIdNames.size());
+        System.out.println("Is map empty? " + userIdNames.isEmpty());
+
+        // Iterating through the map
+        userIdNames.forEach((id, name) -> System.out.println("User ID " + id + ": " + name));
+    }
+}
+```
+
+In this example:
+- We create a `ConcurrentHashMap` named `userIdNames` to store user IDs as keys and corresponding names as values.
+- We use various methods to add, retrieve, update, and remove key-value pairs.
+- We demonstrate how to check for the existence of keys using `containsKey`.
+- We iterate through the map using the `forEach` method to access both keys and values.
+
+`ConcurrentHashMap` is suitable for scenarios where multiple threads need to access and modify the map concurrently. It provides better performance and scalability compared to synchronized alternatives when handling concurrent updates.
+
+
+In summary, if you need a map that supports concurrent access in a multi-threaded environment, ConcurrentHashMap is a recommended choice due to its efficiency and thread-safe design. It offers better performance compared to using synchronized versions of other map implementations like Hashtable or synchronized HashMap.
+
+
+**********************************************************************************************************************************************************************************************************************************
+
+The `java.util.Arrays` class in Java provides various utility methods for working with arrays. It contains methods for sorting, searching, comparing, filling, and converting arrays. Let's explore some of the important methods provided by the `Arrays` class along with examples.
+
+The `java.util.Arrays` class in Java provides a variety of utility methods for working with arrays. Here are some important methods from the `Arrays` class:
+
+1. **Sorting Methods**:
+
+   - `void sort(T[] array)`: Sorts the specified array in ascending order using the natural ordering of its elements.
+   - `void sort(T[] array, Comparator<? super T> c)`: Sorts the specified array using a custom comparator.
+
+2. **Searching Methods**:
+
+   - `int binarySearch(T[] array, T key)`: Searches for the specified key in the sorted array using binary search. Returns the index of the key if found, otherwise a negative value.
+   - `int binarySearch(T[] array, int fromIndex, int toIndex, T key)`: Searches a specified range of the sorted array for the specified key.
+
+3. **Filling and Copying Methods**:
+
+   - `void fill(T[] array, T value)`: Fills the array with the specified value.
+   - `T[] copyOf(T[] original, int newLength)`: Copies the specified array to a new array of the specified length.
+
+4. **Comparing Arrays**:
+
+   - `boolean equals(T[] a, T[] b)`: Checks if the two arrays are equal in terms of length and element values.
+
+5. **Converting Arrays to Strings**:
+
+   - `String toString(T[] array)`: Returns a string representation of the contents of the array.
+
+6. **Array Range Operations**:
+
+   - `T[] copyOfRange(T[] original, int from, int to)`: Copies a specified range of the original array to a new array.
+   - `boolean deepEquals(Object[] a1, Object[] a2)`: Recursively compares two arrays for deep equality.
+
+7. **Array Manipulation**:
+
+   - `void fill(T[] array, int fromIndex, int toIndex, T value)`: Fills a specified range of the array with the specified value.
+   - `void setAll(T[] array, IntFunction<? extends T> generator)`: Sets each element of the array using the provided generator function.
+
+8. **Parallel Array Operations**:
+
+   - `void parallelSort(T[] array)`: Sorts the specified array in parallel using multiple threads.
+   - `void parallelSort(T[] array, Comparator<? super T> cmp)`: Sorts the specified array in parallel using a custom comparator.
+
+**Sorting Methods**:
+
+1. `void sort(T[] array)`: Sorts the specified array in ascending order using the natural ordering of its elements.
+
+Example:
+```java
+import java.util.Arrays;
+
+public class ArraysSortExample {
+    public static void main(String[] args) {
+        int[] numbers = { 5, 2, 8, 1, 9 };
+        Arrays.sort(numbers);
+        System.out.println(Arrays.toString(numbers));
+    }
+}
+```
+
+**Searching Methods**:
+
+2. `int binarySearch(T[] array, T key)`: Searches for the specified key in the sorted array using binary search. Returns the index of the key if found, otherwise a negative value.
+
+Example:
+```java
+import java.util.Arrays;
+
+public class ArraysBinarySearchExample {
+    public static void main(String[] args) {
+        int[] numbers = { 1, 2, 5, 8, 9 };
+        int index = Arrays.binarySearch(numbers, 5);
+        System.out.println("Index of 5: " + index);
+    }
+}
+```
+
+**Filling and Copying Methods**:
+
+3. `void fill(T[] array, T value)`: Fills the array with the specified value.
+
+Example:
+```java
+import java.util.Arrays;
+
+public class ArraysFillExample {
+    public static void main(String[] args) {
+        int[] numbers = new int[5];
+        Arrays.fill(numbers, 42);
+        System.out.println(Arrays.toString(numbers));
+    }
+}
+```
+
+4. `T[] copyOf(T[] original, int newLength)`: Copies the specified array to a new array of the specified length.
+
+Example:
+```java
+import java.util.Arrays;
+
+public class ArraysCopyOfExample {
+    public static void main(String[] args) {
+        int[] source = { 1, 2, 3 };
+        int[] copy = Arrays.copyOf(source, 5);
+        System.out.println(Arrays.toString(copy));
+    }
+}
+```
+
+**Comparing Arrays**:
+
+5. `boolean equals(T[] a, T[] b)`: Checks if the two arrays are equal in terms of length and element values.
+
+Example:
+```java
+import java.util.Arrays;
+
+public class ArraysEqualsExample {
+    public static void main(String[] args) {
+        int[] arr1 = { 1, 2, 3 };
+        int[] arr2 = { 1, 2, 3 };
+        boolean isEqual = Arrays.equals(arr1, arr2);
+        System.out.println("Arrays are equal: " + isEqual);
+    }
+}
+```
+
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class ArraysExample {
+    public static void main(String[] args) {
+        // Sorting Example
+        Integer[] numbers = { 5, 2, 8, 1, 9 };
+        Arrays.sort(numbers);
+        System.out.println("Sorted numbers: " + Arrays.toString(numbers));
+
+        // Binary Search Example
+        int index = Arrays.binarySearch(numbers, 8);
+        System.out.println("Index of 8: " + index);
+
+        // Filling Example
+        int[] filledArray = new int[5];
+        Arrays.fill(filledArray, 42);
+        System.out.println("Filled array: " + Arrays.toString(filledArray));
+
+        // Copying Example
+        int[] sourceArray = { 1, 2, 3 };
+        int[] copiedArray = Arrays.copyOf(sourceArray, 5);
+        System.out.println("Copied array: " + Arrays.toString(copiedArray));
+
+        // Equals Example
+        int[] arr1 = { 1, 2, 3 };
+        int[] arr2 = { 1, 2, 3 };
+        boolean areEqual = Arrays.equals(arr1, arr2);
+        System.out.println("Are arrays equal? " + areEqual);
+
+        // Parallel Sort Example
+        String[] names = { "Alice", "Bob", "Carol", "David", "Eve" };
+        Arrays.parallelSort(names);
+        System.out.println("Sorted names: " + Arrays.toString(names));
+
+        // Using Comparator for Sorting
+        Arrays.sort(names, Comparator.reverseOrder());
+        System.out.println("Reverse sorted names: " + Arrays.toString(names));
+    }
+}
+
+
+These are just a few examples of the utility methods provided by the `Arrays` class. It offers many more methods for different array-related operations, including comparing ranges of arrays, sorting subarrays, and converting arrays to string representations. The `Arrays` class is a convenient tool for performing various operations on arrays without having to implement these functionalities manually.
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+The `java.util.Collections` class in Java provides utility methods for working with collections (such as lists, sets, and maps). It contains a wide range of methods for sorting, searching, synchronizing, and manipulating collections. Let's explore some of the important methods from the `Collections` class along with examples.
+
+**Sorting Methods**:
+
+1. `void sort(List<T> list)`: Sorts the specified list in ascending order using the natural ordering of its elements.
+
+Example:
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class CollectionsSortExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(5);
+        numbers.add(2);
+        numbers.add(8);
+        numbers.add(1);
+        numbers.add(9);
+
+        Collections.sort(numbers);
+        System.out.println(numbers);
+    }
+}
+```
+
+**Searching Methods**:
+
+2. `int binarySearch(List<? extends Comparable<? super T>> list, T key)`: Searches for the specified key in the sorted list using binary search. Returns the index of the key if found, otherwise a negative value.
+
+Example:
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class CollectionsBinarySearchExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(1);
+        numbers.add(2);
+        numbers.add(5);
+        numbers.add(8);
+        numbers.add(9);
+
+        int index = Collections.binarySearch(numbers, 5);
+        System.out.println("Index of 5: " + index);
+    }
+}
+```
+
+**Synchronization Methods**:
+
+3. `Collection<T> synchronizedCollection(Collection<T> c)`: Returns a synchronized (thread-safe) view of the specified collection.
+
+Example:
+```java
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+public class CollectionsSynchronizedExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = new ArrayList<>();
+        Collection<Integer> synchronizedNumbers = Collections.synchronizedCollection(numbers);
+
+        synchronizedNumbers.add(5);
+        synchronizedNumbers.add(10);
+
+        synchronized (synchronizedNumbers) {
+            for (Integer num : synchronizedNumbers) {
+                System.out.println(num);
+            }
+        }
+    }
+}
+```
+
+**Min and Max Methods**:
+
+4. `T min(Collection<? extends T> coll)` and `T max(Collection<? extends T> coll)`: Returns the minimum and maximum element of the collection, respectively.
+
+Example:
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class CollectionsMinMaxExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(5);
+        numbers.add(2);
+        numbers.add(8);
+        numbers.add(1);
+        numbers.add(9);
+
+        int min = Collections.min(numbers);
+        int max = Collections.max(numbers);
+        System.out.println("Min: " + min);
+        System.out.println("Max: " + max);
+    }
+}
+```
+
+**Shuffling Methods**:
+
+5. `void shuffle(List<?> list)`: Shuffles (randomly reorders) the elements in the list.
+
+Example:
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class CollectionsShuffleExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(1);
+        numbers.add(2);
+        numbers.add(3);
+        numbers.add(4);
+        numbers.add(5);
+
+        Collections.shuffle(numbers);
+        System.out.println(numbers);
+    }
+}
+```
+
+These are just a few examples of the utility methods provided by the `Collections` class. It offers many more methods for different collection-related operations, including copying elements, filling collections, reversing collections, and more. The `Collections` class is a powerful tool for performing various operations on collections without having to implement these functionalities manually.
+
+
+
+Here are some important methods provided by the `java.util.Collections` class along with their brief descriptions:
+
+1. **Sorting and Searching**:
+   - `void sort(List<T> list)`: Sorts the list in ascending order using the natural ordering of its elements.
+   - `int binarySearch(List<? extends Comparable<? super T>> list, T key)`: Searches for the specified key in the sorted list using binary search.
+   - `void reverse(List<?> list)`: Reverses the order of the elements in the list.
+
+2. **Synchronization and Wrapping**:
+   - `Collection<T> synchronizedCollection(Collection<T> c)`: Returns a synchronized (thread-safe) view of the specified collection.
+   - `List<T> synchronizedList(List<T> list)`: Returns a synchronized (thread-safe) view of the specified list.
+   - `Map<K, V> synchronizedMap(Map<K, V> m)`: Returns a synchronized (thread-safe) view of the specified map.
+   - `Set<T> synchronizedSet(Set<T> s)`: Returns a synchronized (thread-safe) view of the specified set.
+   - `Collection<T> unmodifiableCollection(Collection<? extends T> c)`: Returns an unmodifiable view of the specified collection.
+   - `List<T> unmodifiableList(List<? extends T> list)`: Returns an unmodifiable view of the specified list.
+   - `Map<K, V> unmodifiableMap(Map<? extends K, ? extends V> m)`: Returns an unmodifiable view of the specified map.
+   - `Set<T> unmodifiableSet(Set<? extends T> s)`: Returns an unmodifiable view of the specified set.
+
+3. **Min and Max**:
+   - `T min(Collection<? extends T> coll)`: Returns the minimum element of the collection.
+   - `T max(Collection<? extends T> coll)`: Returns the maximum element of the collection.
+
+4. **Shuffling and Randomization**:
+   - `void shuffle(List<?> list)`: Shuffles (randomly reorders) the elements in the list.
+   - `void shuffle(List<?> list, Random rnd)`: Shuffles the elements using the specified random number generator.
+
+5. **Copying and Filling**:
+   - `void copy(List<? super T> dest, List<? extends T> src)`: Copies all of the elements from the source list to the destination list.
+   - `void fill(List<? super T> list, T obj)`: Replaces all of the elements in the specified list with the specified element.
+
+6. **Frequency and Reversal**:
+   - `int frequency(Collection<?> c, Object o)`: Returns the number of occurrences of the specified element in the collection.
+   - `void reverse(List<?> list)`: Reverses the order of the elements in the list.
+
+7. **Checking and Emptying**:
+   - `boolean disjoint(Collection<?> c1, Collection<?> c2)`: Checks if two collections have no elements in common.
+   - `void clear(Collection<?> c)`: Removes all elements from the collection.
+
+
+
+```java
+import java.util.*;
+
+public class CollectionsExample {
+    public static void main(String[] args) {
+        // Sorting Example
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(5);
+        numbers.add(2);
+        numbers.add(8);
+        numbers.add(1);
+        numbers.add(9);
+        Collections.sort(numbers);
+        System.out.println("Sorted numbers: " + numbers);
+
+        // Synchronization Example
+        List<Integer> synchronizedList = Collections.synchronizedList(new ArrayList<>());
+        synchronizedList.add(5);
+        synchronizedList.add(10);
+        synchronized (synchronizedList) {
+            for (Integer num : synchronizedList) {
+                System.out.println("Synchronized List: " + num);
+            }
+        }
+
+        // Max and Min Example
+        int max = Collections.max(numbers);
+        int min = Collections.min(numbers);
+        System.out.println("Max: " + max);
+        System.out.println("Min: " + min);
+
+        // Shuffling Example
+        List<String> colors = new ArrayList<>();
+        colors.add("Red");
+        colors.add("Green");
+        colors.add("Blue");
+        Collections.shuffle(colors);
+        System.out.println("Shuffled colors: " + colors);
+
+        // Copy Example
+        List<Integer> source = Arrays.asList(1, 2, 3);
+        List<Integer> destination = new ArrayList<>(source.size());
+        Collections.copy(destination, source);
+        System.out.println("Copied destination: " + destination);
+
+        // Frequency Example
+        int frequency = Collections.frequency(numbers, 5);
+        System.out.println("Frequency of 5: " + frequency);
+
+        // Reversal Example
+        Collections.reverse(colors);
+        System.out.println("Reversed colors: " + colors);
+    }
+}
+```
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Iterator in java
+
+In Java, the `Iterator` is an interface that provides a way to traverse through elements in a collection one by one. It is commonly used to iterate over collections like lists, sets, and maps. Here's how you can use the `Iterator` interface with an example:
+
+```java
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class IteratorExample {
+    public static void main(String[] args) {
+        // Create a list of integers
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(5);
+        numbers.add(10);
+        numbers.add(15);
+        numbers.add(20);
+
+        // Get an iterator for the list
+        Iterator<Integer> iterator = numbers.iterator();
+
+        // Iterate through the list using the iterator
+        while (iterator.hasNext()) {
+            Integer number = iterator.next();
+            System.out.println(number);
+        }
+    }
+}
+```
+
+In this example:
+- We create a `List` of integers called `numbers` and populate it with some values.
+- We obtain an iterator for the list using the `iterator()` method provided by the `List` interface.
+- We use a `while` loop to iterate through the list. The `hasNext()` method checks if there is another element to iterate over, and the `next()` method returns the current element and advances the iterator to the next element.
+
+Keep in mind that the `Iterator` is used for read-only traversal; you cannot use it to modify the collection's elements while iterating. If you need to modify the collection during iteration, consider using the `ListIterator` (which extends `Iterator`) or using a traditional `for` loop.
+
+Here are some important methods provided by the `Iterator` interface in Java:
+
+1. **`boolean hasNext()`**: Returns `true` if there is at least one more element to iterate over, otherwise returns `false`.
+
+2. **`E next()`**: Returns the next element in the iteration and advances the iterator to the next position.
+
+3. **`void remove()`**: Removes the last element returned by `next()` from the collection. This method is optional and not supported by all collections.
+
+While these are the core methods of the `Iterator` interface, it's worth noting that `Iterator` is used mainly for read-only traversal. If you need more control or additional operations during iteration, you might want to consider using the `ListIterator` interface (which extends `Iterator`) or other mechanisms.
+
+Here's an example that demonstrates the use of these methods:
+
+```java
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class IteratorMethodsExample {
+    public static void main(String[] args) {
+        List<String> fruits = new ArrayList<>();
+        fruits.add("Apple");
+        fruits.add("Banana");
+        fruits.add("Orange");
+        fruits.add("Mango");
+
+        Iterator<String> iterator = fruits.iterator();
+
+        while (iterator.hasNext()) {
+            String fruit = iterator.next();
+            System.out.println("Fruit: " + fruit);
+
+            // Demonstrate using remove() method
+            if (fruit.equals("Banana")) {
+                iterator.remove();
+            }
+        }
+
+        System.out.println("Remaining fruits: " + fruits);
+    }
+}
+```
+
+In this example:
+- We create a `List` of fruits and obtain an `Iterator` using the `iterator()` method.
+- We use a `while` loop with `hasNext()` and `next()` methods to iterate through the list.
+- We use the `remove()` method to remove a fruit (in this case, "Banana") while iterating.
+- After the loop, we print the remaining fruits to show that "Banana" has been removed.
+
+Keep in mind that the behavior of the `Iterator` depends on the specific collection you are working with. Some collections might have different types of iterators with additional capabilities.
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+camparable interface in java
+
+The `Comparable` interface in Java is used to define the natural ordering of objects within a class. By implementing the `Comparable` interface and providing the `compareTo` method, you can enable objects of your class to be sorted and compared in a meaningful way. The `compareTo` method returns a negative integer, zero, or a positive integer depending on whether the current object is less than, equal to, or greater than the specified object.
+
+Here's an example of how to use the `Comparable` interface:
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class Student implements Comparable<Student> {
+    private String name;
+    private int age;
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public int compareTo(Student other) {
+        // Compare students based on age
+        return Integer.compare(this.age, other.age);
+    }
+
+    @Override
+    public String toString() {
+        return "Student{name='" + name + "', age=" + age + '}';
+    }
+}
+
+public class ComparableExample {
+    public static void main(String[] args) {
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("Alice", 20));
+        students.add(new Student("Bob", 18));
+        students.add(new Student("Carol", 22));
+
+        System.out.println("Before sorting:");
+        for (Student student : students) {
+            System.out.println(student);
+        }
+
+        Collections.sort(students);
+
+        System.out.println("\nAfter sorting:");
+        for (Student student : students) {
+            System.out.println(student);
+        }
+    }
+}
+```
+
+In this example:
+- We define a `Student` class that implements the `Comparable` interface.
+- The `compareTo` method compares `Student` objects based on their ages.
+- We create a list of `Student` objects and populate it with student information.
+- Before sorting, we print the list to see the original order.
+- After sorting using `Collections.sort()`, we print the list again to see the sorted order based on age.
+
+By implementing the `Comparable` interface, you enable your objects to be naturally ordered and sortable using Java's built-in sorting mechanisms.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+comparator interface
+
+The `Comparator` interface in Java is used to define custom comparison logic for objects that do not implement the `Comparable` interface. It allows you to create multiple ways of comparing objects and provides flexibility in sorting and ordering objects based on different criteria. The `Comparator` interface has a single method `compare(T o1, T o2)` that returns a negative integer, zero, or a positive integer depending on whether `o1` is less than, equal to, or greater than `o2`.
+
+Here's an example of how to use the `Comparator` interface:
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+class Employee {
+    private String name;
+    private int age;
+
+    public Employee(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{name='" + name + "', age=" + age + '}';
+    }
+}
+
+public class ComparatorExample {
+    public static void main(String[] args) {
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee("Alice", 30));
+        employees.add(new Employee("Bob", 25));
+        employees.add(new Employee("Carol", 28));
+
+        // Sort employees by name using a custom comparator
+        Collections.sort(employees, new NameComparator());
+
+        System.out.println("Sorted by name:");
+        for (Employee employee : employees) {
+            System.out.println(employee);
+        }
+
+        // Sort employees by age using another custom comparator
+        Collections.sort(employees, new AgeComparator());
+
+        System.out.println("\nSorted by age:");
+        for (Employee employee : employees) {
+            System.out.println(employee);
+        }
+    }
+}
+
+class NameComparator implements Comparator<Employee> {
+    @Override
+    public int compare(Employee o1, Employee o2) {
+        return o1.getName().compareTo(o2.getName());
+    }
+}
+
+class AgeComparator implements Comparator<Employee> {
+    @Override
+    public int compare(Employee o1, Employee o2) {
+        return Integer.compare(o1.getAge(), o2.getAge());
+    }
+}
+```
+
+In this example:
+- We define an `Employee` class to demonstrate custom sorting using the `Comparator` interface.
+- We create two custom comparators: `NameComparator` and `AgeComparator`.
+- The `NameComparator` compares employees based on their names using the `String` class's `compareTo` method.
+- The `AgeComparator` compares employees based on their ages using `Integer.compare`.
+- We create a list of `Employee` objects and sort them using the custom comparators.
+- We print the sorted lists to demonstrate the different sorting criteria.
+
+Using the `Comparator` interface allows you to create flexible and customizable sorting logic for objects that don't have a natural order defined by implementing the `Comparable` interface.
+
