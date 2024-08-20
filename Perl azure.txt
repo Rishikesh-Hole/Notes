@@ -1,0 +1,305 @@
+To use the information provided in the image and your certificate to upload documents to SharePoint using a Perl script, follow the steps below:
+
+### 1. **Prerequisites**
+   Ensure that you have the following:
+   - The SPN (Service Principal Name) Client ID.
+   - The Tenant ID.
+   - The certificate and private key files.
+   - The URL of the SharePoint site where you need to upload documents.
+   - The necessary Perl modules installed (`REST::Client`, `JSON`, `Crypt::PK::RSA`, `Crypt::OpenSSL::X509`, `LWP::UserAgent`).
+
+### 2. **Prepare the JWT Assertion**
+   You need to create a JWT (JSON Web Token) assertion to authenticate using the provided SPN Client ID and certificate.
+
+### 3. **Create a Perl Script**
+   Below is a basic example of how you can create a Perl script to authenticate and upload a document to SharePoint:
+
+```perl
+use strict;
+use warnings;
+use REST::Client;
+use JSON;
+use MIME::Base64;
+use Crypt::PK::RSA;
+use LWP::UserAgent;
+use Crypt::OpenSSL::X509;
+
+# Configuration details
+my $client_id = '0007bd36-f5b4-4e24-8c8d-e8e931c259aa'; # SPN Client ID from the image
+my $tenant_id = 'fb6ea403-7cf1-4905-810a-fe5547e98204'; # Tenant ID from the image
+my $resource = 'https://ubscloudapc.sharepoint.com'; # SharePoint URL
+
+# Paths to your certificate and private key files
+my $cert_file = 'path_to_your_certificate.pem';  # Replace with your certificate path
+my $key_file = 'path_to_your_private_key.pem';   # Replace with your private key path
+
+# Load the certificate and private key
+my $cert = Crypt::OpenSSL::X509->new_from_file($cert_file);
+my $key = Crypt::PK::RSA->new($key_file);
+
+# Create JWT header and claims
+my $header = {
+    'alg' => 'RS256',
+    'x5t' => encode_base64url($cert->fingerprint_sha1),
+};
+
+my $claims = {
+    'aud' => "https://login.microsoftonline.com/$tenant_id/oauth2/token",
+    'iss' => $client_id,
+    'sub' => $client_id,
+    'exp' => time() + 3600,
+    'nbf' => time(),
+    'jti' => "id" . time(),
+};
+
+# Generate JWT assertion
+my $jwt = encode_jwt($header, $claims, $key);
+
+# Obtain the Access Token
+my $token_url = "https://login.microsoftonline.com/$tenant_id/oauth2/token";
+
+my $ua = LWP::UserAgent->new;
+my $response = $ua->post($token_url, {
+    'grant_type' => 'client_credentials',
+    'client_id' => $client_id,
+    'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+    'client_assertion' => $jwt,
+    'resource' => $resource
+});
+
+my $content = decode_json($response->decoded_content);
+my $access_token = $content->{'access_token'};
+
+# Upload a Document to SharePoint
+my $site_url = 'https://ubscloudapc.sharepoint.com/teams/cssp16poetshfi1'; # Site URL from the image
+my $folder_path = '/teams/cssp16poetshfi1/Shared Documents/yourfolder'; # Update with your folder path
+my $file_name = 'yourfile.txt';
+my $file_content = 'This is the content of your file.';
+
+my $upload_url = "$site_url/_api/web/GetFolderByServerRelativeUrl('$folder_path')/Files/add(url='$file_name',overwrite=true)";
+
+my $client = REST::Client->new();
+$client->addHeader('Authorization', "Bearer $access_token");
+$client->addHeader('Accept', 'application/json;odata=verbose');
+$client->addHeader('Content-Type', 'application/octet-stream');
+
+$client->PUT($upload_url, $file_content);
+
+if ($client->responseCode() == 200) {
+    print "File uploaded successfully!\n";
+} else {
+    print "Error: " . $client->responseContent() . "\n";
+}
+```
+
+### 4. **Replace Placeholder Values**
+   - Replace `path_to_your_certificate.pem` and `path_to_your_private_key.pem` with the actual paths to your certificate and private key files.
+   - Update the `folder_path` variable with the correct path to the folder where you want to upload the document.
+
+### 5. **Run the Script**
+   Execute the Perl script in your environment. Ensure that the script has access to the necessary network and permissions to interact with SharePoint.
+
+### 6. **Error Handling**
+   Make sure to add proper error handling in your script to manage any issues that might occur during authentication or file upload.
+
+This should allow you to authenticate using your certificate and upload documents to SharePoint as required.
+
+
+
+
+
+
+To check which Perl modules are already installed on your system, you can use the following methods:
+
+### 1. **Using `perldoc` Command**
+   The `perldoc` command can be used to check if a specific module is installed:
+
+   ```bash
+   perldoc -l Module::Name
+   ```
+
+   Replace `Module::Name` with the name of the module you want to check. If the module is installed, this command will return the path to the module file. If it’s not installed, you will get an error message.
+
+   For example, to check if `JSON` is installed:
+
+   ```bash
+   perldoc -l JSON
+   ```
+
+### 2. **Using `perl -M` Command**
+   You can also use the `perl -M` command to check if a module is installed:
+
+   ```bash
+   perl -MModule::Name -e1
+   ```
+
+   Replace `Module::Name` with the module you want to check. If the module is installed, the command will run without any output. If it’s not installed, you will receive an error.
+
+   Example:
+
+   ```bash
+   perl -MJSON -e1
+   ```
+
+### 3. **Listing All Installed Modules**
+   If you want to see a list of all installed Perl modules, you can use the following command:
+
+   ```bash
+   perl -MCPAN -e 'CPAN::Shell->install;'
+   ```
+
+   This will open the CPAN shell, from which you can use the command:
+
+   ```bash
+   m /./
+   ```
+
+   This will list all installed modules. Note that this can produce a long list.
+
+### 4. **Using CPAN Minus (`cpanm`)**
+   If you use `cpanm` for module management, you can check if a module is installed by running:
+
+   ```bash
+   cpanm --info Module::Name
+   ```
+
+   Replace `Module::Name` with the name of the module you want to check. If the module is installed, this command will provide details about the module, including its version.
+
+### 5. **Using `instmodsh` Command**
+   You can also use the `instmodsh` command, which is an interactive shell for querying installed modules:
+
+   ```bash
+   instmodsh
+   ```
+
+   Once in the shell, type `l` to list all installed modules. Type `q` to quit.
+
+These methods should help you determine which Perl modules are installed on your system.
+
+
+
+To install a Perl module, you can use several methods depending on your system setup and preferences. Below are the most common ways to install Perl modules:
+
+### 1. **Using CPAN (Comprehensive Perl Archive Network)**
+   CPAN is the default and most common method for installing Perl modules.
+
+   #### a. **Using the `cpan` Command**
+   You can install a module using the `cpan` command:
+
+   ```bash
+   cpan Module::Name
+   ```
+
+   Replace `Module::Name` with the name of the module you want to install.
+
+   #### b. **Interactive CPAN Shell**
+   You can also start the CPAN shell and install modules interactively:
+
+   ```bash
+   cpan
+   ```
+
+   Once inside the CPAN shell, you can install a module by typing:
+
+   ```cpan
+   install Module::Name
+   ```
+
+   #### c. **First-time Setup**
+   When you first use `cpan`, it may ask you a series of configuration questions. You can usually accept the default answers by pressing `Enter` for each prompt.
+
+### 2. **Using CPAN Minus (cpanm)**
+   `cpanm` (CPAN Minus) is a more user-friendly alternative to the `cpan` command. It’s easier to use and often handles dependencies better.
+
+   #### a. **Installing `cpanm`**
+   If `cpanm` is not already installed, you can install it with:
+
+   ```bash
+   cpan App::cpanminus
+   ```
+
+   #### b. **Using `cpanm` to Install Modules**
+   Once `cpanm` is installed, you can install a module with:
+
+   ```bash
+   cpanm Module::Name
+   ```
+
+### 3. **Manual Installation**
+   If you cannot use `cpan` or `cpanm`, you can manually download and install a module:
+
+   #### a. **Download the Module**
+   Download the module's `.tar.gz` file from [CPAN](https://www.cpan.org/).
+
+   #### b. **Extract the Module**
+   Extract the module using `tar`:
+
+   ```bash
+   tar zxvf Module-Name.tar.gz
+   ```
+
+   #### c. **Build and Install the Module**
+   Navigate to the module's directory and run the following commands:
+
+   ```bash
+   perl Makefile.PL
+   make
+   make test
+   sudo make install
+   ```
+
+   This method manually builds and installs the module, and it requires that you have `make` and other build tools installed.
+
+### 4. **Installing Modules Locally (Without Root Access)**
+   If you don't have root access, you can install modules locally in your home directory:
+
+   #### a. **Using `cpanm` with `--local-lib`**
+   You can specify a local library directory with `cpanm`:
+
+   ```bash
+   cpanm --local-lib=~/perl5 Module::Name
+   ```
+
+   Add the following lines to your `.bashrc` or `.bash_profile` to include the local library in your Perl environment:
+
+   ```bash
+   export PERL5LIB=~/perl5/lib/perl5:$PERL5LIB
+   export PATH=~/perl5/bin:$PATH
+   ```
+
+   #### b. **Using `local::lib`**
+   Alternatively, you can use the `local::lib` module to manage local installations:
+
+   ```bash
+   cpan local::lib
+   ```
+
+   Follow the instructions it gives to set up your environment, then you can install modules locally without needing root access.
+
+### 5. **Using a Package Manager (Linux Distributions)**
+   On some Linux distributions, you can install Perl modules using the system's package manager. For example:
+
+   #### a. **On Ubuntu/Debian**
+   ```bash
+   sudo apt-get install libmodule-name-perl
+   ```
+
+   #### b. **On CentOS/RHEL**
+   ```bash
+   sudo yum install perl-Module-Name
+   ```
+
+### 6. **Installing from GitHub or Other Sources**
+   If a module is hosted on GitHub or another source repository, you might install it directly:
+
+   ```bash
+   cpanm git://github.com/username/repo.git
+   ```
+
+   Or, clone the repository and install manually as described in the "Manual Installation" section.
+
+### Troubleshooting
+- If you encounter issues during installation, it might be due to missing dependencies or tools. Ensure you have `make`, `gcc`, or other necessary tools installed.
+- You can also try using `sudo` for installations requiring root access.
+
+This should cover most scenarios for installing Perl modules.
