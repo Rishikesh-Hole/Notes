@@ -163,3 +163,83 @@ if [ -z "$v_curl_output" ]; then
 else
     echo "Error uploading file: $v_curl_output"
 fi
+
+
+
+
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+#!/bin/bash
+
+# Define required variables
+v_client_id="your-client-id"  # Replace with your actual Client ID
+v_tenant_id="your-tenant-id"  # Replace with your actual Tenant ID
+v_cert_thumbprint="your-cert-thumbprint"  # Replace with your certificate thumbprint
+v_key_cert_path="/path/to/your/privatekey.pem"  # Replace with your private key file path
+v_key_password="your-key-password"  # Replace with your key password
+v_file_path="/path/to/your/file.txt"  # Replace with the path to the file you want to upload
+v_certificate_file_path="/path/to/certificate/files"  # Replace with the path to your certificate files
+v_env_cert="your-env-cert.pem"  # Replace with your environment certificate filename
+v_env_cert_key="your-env-cert-key.pem"  # Replace with your environment certificate key filename
+
+# Base64 URL encoding function
+base64url() {
+    openssl base64 -e | tr -d '=' | tr '/+' '_-' | tr -d '\n'
+}
+
+# Function to create a JWT
+create_JWT() {
+    v_app_id=$1
+    v_aud="https://login.microsoftonline.com/$2/oauth2/v2.0/token"
+    v_sub="$1"
+    v_jti=$(openssl rand -hex 32)
+    v_x5t=$3
+    v_now=$(date +%s)
+    v_exp=$((v_now + 540))
+    v_header_raw="{\"alg\":\"RS256\",\"typ\":\"JWT\",\"x5t\":\"$v_x5t\"}"
+    v_header=$(echo -n "$v_header_raw" | base64url)
+    v_payload_raw="{\"aud\":\"$v_aud\",\"exp\":\"$v_exp\",\"iss\":\"$v_app_id\",\"nbf\":\"$v_now\",\"sub\":\"$v_sub\",\"iat\":\"$v_now\",\"jti\":\"$v_jti\"}"
+    v_payload=$(echo -n "$v_payload_raw" | base64url)
+    v_header_payload="$v_header.$v_payload"
+    v_signature=$(echo -n "$v_header_payload" | openssl dgst -sha256 -binary -sign $4 -passin pass:$5 | base64url)
+    v_jwt="$v_header_payload.$v_signature"
+    echo $v_jwt
+}
+
+# Generate the JWT assertion
+v_assertion=$(create_JWT $v_client_id $v_tenant_id $v_cert_thumbprint $v_key_cert_path $v_key_password)
+
+# Get token from Azure AD principal by using client assertion
+v_token_command="curl -k --request POST --data-urlencode client_id=$v_client_id \
+--data-urlencode scope=https://graph.microsoft.com/.default \
+--data-urlencode client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer \
+--data-urlencode client_assertion=$v_assertion \
+--data-urlencode grant_type=client_credentials \
+--cacert ${v_certificate_file_path}/${v_env_cert} \
+--key ${v_certificate_file_path}/${v_env_cert_key} https://login.microsoftonline.com/$v_tenant_id/oauth2/v2.0/token"
+
+# Execute the command to get the access token
+v_token=$(eval $v_token_command | grep -o '"access_token":"[^"]*"' | sed 's/"access_token":"//' | sed 's/"//')
+
+# Check if the token was successfully retrieved
+if [ -z "$v_token" ]; then
+    echo "Error: Failed to retrieve access token"
+    exit 1
+fi
+
+# Use the access token to make an authenticated request (e.g., file upload)
+v_command="curl -X PUT -H 'Authorization: Bearer $v_token' -H 'Content-Type: text/html' -T '$v_file_path' --silent --show-error 2>&1"
+
+# Execute the authenticated command and capture the output
+v_curl_output=$(eval $v_command)
+
+# Check for errors in the curl output
+if echo "$v_curl_output" | grep -qi "error"; then
+    echo "Error uploading file: $v_curl_output"
+    exit 1
+else
+    echo "File uploaded successfully!"
+fi
+
+
