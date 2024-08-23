@@ -54,19 +54,39 @@ P12_FILE="/path/to/PoetsHfiSharePoint.ap.hedani.net.p12"
 P12_PASSWORD_FILE="/path/to/PoetsHfiSharePoint.ap.hedani.net.p12.pwd"
 PUBLIC_CERT_FILE="/path/to/poetsPublicCert.pem"
 TARGET_FILE="/path/to/uploadfile.txt"
-SITE_URL="https://your-tenant.sharepoint.com/sites/yoursite"
+SITE_URL="https://ubscloudapc.sharepoint.com/teams/cssp16poetshfi1"
 UPLOAD_FOLDER_PATH="Shared Documents/yourfolder"
-FILE_NAME="yourfile.txt"
+FILE_NAME=$(basename "$TARGET_FILE")
+TENANT_ID="your-tenant-id"  # Replace with your Azure AD tenant ID
+CLIENT_ID="your-client-id"  # Replace with your Azure AD application (client) ID
+RESOURCE="https://ubscloudapc.sharepoint.com"  # Root URL for your SharePoint Online environment
 
 # Read the password from the .pwd file
 P12_PASSWORD=$(cat $P12_PASSWORD_FILE)
 
-# Get the access token (This example assumes the token is retrieved elsewhere in the script)
+# Create the JWT header and payload
+HEADER=$(echo -n '{"alg":"RS256","typ":"JWT"}' | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+PAYLOAD=$(echo -n "{\"aud\":\"https://login.microsoftonline.com/$TENANT_ID/oauth2/token\",\"iss\":\"$CLIENT_ID\",\"sub\":\"$CLIENT_ID\",\"exp\":$(( $(date +%s) + 3600 )),\"nbf\":$(date +%s),\"jti\":\"$(uuidgen)\"}" | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+
+# Sign the JWT
+SIGNATURE=$(echo -n "$HEADER.$PAYLOAD" | openssl dgst -sha256 -sign <(openssl pkcs12 -in $P12_FILE -nocerts -passin pass:$P12_PASSWORD) | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+
+# Construct the JWT assertion
+JWT_ASSERTION="$HEADER.$PAYLOAD.$SIGNATURE"
+
+# Get the access token using the JWT assertion
 ACCESS_TOKEN=$(curl -s -X POST "https://login.microsoftonline.com/$TENANT_ID/oauth2/token" \
     -d "grant_type=client_credentials" \
     -d "client_id=$CLIENT_ID" \
-    -d "resource=$SITE_URL" \
-    --cert $PUBLIC_CERT_FILE --key $P12_FILE --pass "$P12_PASSWORD" | jq -r '.access_token')
+    -d "client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer" \
+    -d "client_assertion=$JWT_ASSERTION" \
+    -d "resource=$RESOURCE" | grep -o '"access_token":"[^"]*"' | sed 's/"access_token":"//' | sed 's/"//')
+
+# Check if the access token was successfully retrieved
+if [ -z "$ACCESS_TOKEN" ]; then
+    echo "Failed to retrieve access token"
+    exit 1
+fi
 
 # Upload the file to SharePoint
 response=$(curl -X POST \
@@ -84,3 +104,4 @@ if [ "$response" -eq 200 ]; then
 else
     echo "Failed to upload file. HTTP Status: $response"
 fi
+
