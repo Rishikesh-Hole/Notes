@@ -112,3 +112,54 @@ fi
 - Verify that all file paths and passwords are correct and that the `.p12` file or PEM files are valid.
 
 Let me know if this resolves the issue or if further troubleshooting is needed!
+
+
+
+
+
+
+
+
+
+
+
+
+##########################################################
+
+
+# Define required variables
+v_client_id="your_client_id"
+v_tenant_id="your_tenant_id"
+v_cert_thumbprint="your_cert_thumbprint"
+v_key_cert_path="/path/to/your/privatekey.pem"
+v_key_password="your_key_password"
+v_file_path="/path/to/uploadfile.txt"
+v_sharepoint_url="https://yourtenant.sharepoint.com/sites/yoursite/_api/web/GetFolderByServerRelativeUrl('/Shared Documents')/Files/add(url='uploadfile.txt',overwrite=true)"
+
+# Generate JWT
+v_jwt=$(create_JWT $v_client_id $v_tenant_id $v_cert_thumbprint $v_key_cert_path $v_key_password)
+
+# Request an access token
+v_token_command="curl -X POST https://login.microsoftonline.com/$v_tenant_id/oauth2/v2.0/token \\
+-d 'client_id=$v_client_id' \\
+-d 'scope=https://graph.microsoft.com/.default' \\
+-d 'client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer' \\
+-d 'client_assertion=$v_jwt' \\
+-d 'grant_type=client_credentials'"
+
+v_token=$(eval $v_token_command | grep -o '"access_token":"[^"]*"' | sed 's/"access_token":"//' | sed 's/"//')
+
+# Use the access token to make an authenticated request (e.g., file upload)
+v_curl_command="curl -X PUT -H 'Authorization: Bearer $v_token' \\
+-H 'Accept: application/json;odata=verbose' \\
+--upload-file '$v_file_path' \\
+$v_sharepoint_url"
+
+v_curl_output=$(eval $v_curl_command | grep -i error)
+
+# Check for errors
+if [ -z "$v_curl_output" ]; then
+    echo "File uploaded successfully!"
+else
+    echo "Error uploading file: $v_curl_output"
+fi
