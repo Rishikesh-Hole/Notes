@@ -1,0 +1,114 @@
+The error you're encountering (`SEC_ERROR_UNKNOWN_PKCS11_ERROR` and `PEM_read_bio: Expecting: ANY PRIVATE KEY`) suggests that `curl` is having trouble loading the `.p12` certificate or that it's not correctly interpreting the certificate and key from the `.p12` file.
+
+### Let's address this step by step:
+
+#### 1. **Check the `.p12` File**
+   Ensure that the `.p12` file is valid and contains both the private key and certificate:
+
+   ```bash
+   openssl pkcs12 -in /sw/tis/core/PoetsHfiSharePoint.ap.hedani.net.p12 -noout -info
+   ```
+
+   This command will prompt you for the password and then display the contents of the `.p12` file. If this command fails, it means the `.p12` file may be corrupted or the password might be incorrect.
+
+#### 2. **Convert the `.p12` to Separate PEM Files**
+   If the `.p12` file is valid but still causing issues, consider converting it to separate PEM files (one for the certificate and one for the private key). 
+
+   **Convert the Private Key:**
+   ```bash
+   openssl pkcs12 -in /sw/tis/core/PoetsHfiSharePoint.ap.hedani.net.p12 -nocerts -out /sw/tis/core/privatekey.pem -nodes -passin pass:yourpassword
+   ```
+
+   **Convert the Certificate:**
+   ```bash
+   openssl pkcs12 -in /sw/tis/core/PoetsHfiSharePoint.ap.hedani.net.p12 -nokeys -out /sw/tis/core/certificate.pem -passin pass:yourpassword
+   ```
+
+   **Note:** Replace `yourpassword` with the actual password for the `.p12` file.
+
+   After converting, modify your script to use these separate PEM files:
+
+   ```ksh
+   response=$(curl -X POST \
+       -H "Authorization: Bearer $ACCESS_TOKEN" \
+       -H "Accept: application/json;odata=verbose" \
+       -H "Content-Type: application/octet-stream" \
+       --cert /sw/tis/core/certificate.pem --key /sw/tis/core/privatekey.pem \
+       --data-binary @"$FILE_CONTENT" \
+       "$RESOURCE/_api/web/GetFolderByServerRelativeUrl('$UPLOAD_FOLDER_PATH')/Files/add(url='$FILE_NAME',overwrite=true)" \
+       -o /dev/null -w "%{http_code}")
+   ```
+
+#### 3. **Ensure the Correct File Paths**
+   The error message also indicates that `FILE_CONTENT` is not being found. Ensure that you're pointing to an actual file path instead of using a string for the file content. If you want to create a file dynamically, do so before the `curl` command:
+
+   ```ksh
+   echo "This is the content of your file." > /tmp/uploadfile.txt
+   TARGET_FILE="/tmp/uploadfile.txt"
+   ```
+
+   Then, change the `--data-binary` option to use the file:
+
+   ```ksh
+   --data-binary @"$TARGET_FILE"
+   ```
+
+#### 4. **Debugging the Configuration File Warning**
+   The warning `can't open config file: /usr/local/ssl/openssl.cnf` is usually benign unless your setup requires specific configurations from that file. You can explicitly tell OpenSSL to use a specific configuration file or ignore this warning if it’s not impacting your operation.
+
+### Final Script Example (Using Separate PEM Files):
+
+```ksh
+#!/bin/ksh
+
+# Variables
+CLIENT_ID="0007bd36-f5b4-4e24-8c8d-e8e931c259aa"
+TENANT_ID="fb6ea403-7cf1-4905-810a-fe5547e98204"
+RESOURCE="https://ubscloudapc.sharepoint.com"
+PRIVATE_KEY_FILE="/sw/tis/core/privatekey.pem"
+CERT_FILE="/sw/tis/core/certificate.pem"
+UPLOAD_FOLDER_PATH="/teams/cssp16poetshfi1/Documents/UserReports/ConnectionTesting"
+FILE_NAME="Rishikesh.txt"
+TARGET_FILE="/tmp/uploadfile.txt"
+
+# Create the content file
+echo "This is the content of your file." > $TARGET_FILE
+
+# Step 1: Create the JWT Assertion
+JWT_HEADER=$(echo -n '{"alg":"RS256","typ":"JWT"}' | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+JWT_CLAIMS=$(echo -n "{\"aud\":\"https://login.microsoftonline.com/$TENANT_ID/oauth2/token\",\"iss\":\"$CLIENT_ID\",\"sub\":\"$CLIENT_ID\",\"exp\":$(( $(date +%s) + 3600 )),\"nbf\":$(date +%s),\"jti\":\"id$(date +%s)\"}" | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+JWT_SIGNATURE=$(echo -n "$JWT_HEADER.$JWT_CLAIMS" | openssl dgst -sha256 -sign $PRIVATE_KEY_FILE | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+JWT="$JWT_HEADER.$JWT_CLAIMS.$JWT_SIGNATURE"
+
+# Step 2: Request an Access Token from Azure AD
+ACCESS_TOKEN=$(curl -s -X POST "https://login.microsoftonline.com/$TENANT_ID/oauth2/token" \
+    -d "grant_type=client_credentials" \
+    -d "client_id=$CLIENT_ID" \
+    -d "client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer" \
+    -d "client_assertion=$JWT" \
+    -d "resource=$RESOURCE" | grep -o '"access_token":"[^"]*"' | sed 's/"access_token":"//' | sed 's/"//')
+
+# Step 3: Upload the File to SharePoint
+response=$(curl -X POST \
+    -H "Authorization: Bearer $ACCESS_TOKEN" \
+    -H "Accept: application/json;odata=verbose" \
+    -H "Content-Type: application/octet-stream" \
+    --cert $CERT_FILE --key $PRIVATE_KEY_FILE \
+    --data-binary @"$TARGET_FILE" \
+    "$RESOURCE/_api/web/GetFolderByServerRelativeUrl('$UPLOAD_FOLDER_PATH')/Files/add(url='$FILE_NAME',overwrite=true)" \
+    -o /dev/null -w "%{http_code}")
+
+# Step 4: Check for Success or Failure
+if [ "$response" -eq 200 ]; then
+    echo "File uploaded successfully!"
+else
+    echo "Error uploading file. HTTP Status: $response"
+fi
+```
+
+### Summary:
+- Convert your `.p12` file to separate PEM files for the private key and certificate if the `.p12` file is causing issues.
+- Ensure you’re providing a valid file path for the file content rather than directly passing a string.
+- Verify that all file paths and passwords are correct and that the `.p12` file or PEM files are valid.
+
+Let me know if this resolves the issue or if further troubleshooting is needed!
