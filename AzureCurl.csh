@@ -27,7 +27,7 @@ ACCESS_TOKEN=$(curl -s -X POST "https://login.microsoftonline.com/$TENANT_ID/oau
   -d "resource=$RESOURCE" | jq -r '.access_token')
 
 # Step 3: Upload the File to SharePoint
-curl -X POST "$SITE_URL/_api/web/GetFolderByServerRelativeUrl('$UPLOAD_FOLDER_PATH')/Files/add(url='$FILE_NAME',overwrite=true)" \
+curl -k -X POST "$SITE_URL/_api/web/GetFolderByServerRelativeUrl('$UPLOAD_FOLDER_PATH')/Files/add(url='$FILE_NAME',overwrite=true)" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Accept: application/json;odata=verbose" \
   -H "Content-Type: application/octet-stream" \
@@ -41,4 +41,46 @@ if [ $? -eq 0 ]; then
   echo "File uploaded successfully!"
 else
   echo "Error uploading file."
+fi
+
+
+
+#######################################
+
+#!/bin/ksh
+
+# Variables
+P12_FILE="/path/to/PoetsHfiSharePoint.ap.hedani.net.p12"
+P12_PASSWORD_FILE="/path/to/PoetsHfiSharePoint.ap.hedani.net.p12.pwd"
+PUBLIC_CERT_FILE="/path/to/poetsPublicCert.pem"
+TARGET_FILE="/path/to/uploadfile.txt"
+SITE_URL="https://your-tenant.sharepoint.com/sites/yoursite"
+UPLOAD_FOLDER_PATH="Shared Documents/yourfolder"
+FILE_NAME="yourfile.txt"
+
+# Read the password from the .pwd file
+P12_PASSWORD=$(cat $P12_PASSWORD_FILE)
+
+# Get the access token (This example assumes the token is retrieved elsewhere in the script)
+ACCESS_TOKEN=$(curl -s -X POST "https://login.microsoftonline.com/$TENANT_ID/oauth2/token" \
+    -d "grant_type=client_credentials" \
+    -d "client_id=$CLIENT_ID" \
+    -d "resource=$SITE_URL" \
+    --cert $PUBLIC_CERT_FILE --key $P12_FILE --pass "$P12_PASSWORD" | jq -r '.access_token')
+
+# Upload the file to SharePoint
+response=$(curl -X POST \
+    -H "Authorization: Bearer $ACCESS_TOKEN" \
+    -H "Accept: application/json;odata=verbose" \
+    -H "Content-Type: application/octet-stream" \
+    --cert-type P12 --cert $P12_FILE:$P12_PASSWORD \
+    --data-binary "@$TARGET_FILE" \
+    "$SITE_URL/_api/web/GetFolderByServerRelativeUrl('$UPLOAD_FOLDER_PATH')/Files/add(url='$FILE_NAME',overwrite=true)" \
+    -o /dev/null -w "%{http_code}")
+
+# Check the response status
+if [ "$response" -eq 200 ]; then
+    echo "File uploaded successfully!"
+else
+    echo "Failed to upload file. HTTP Status: $response"
 fi
