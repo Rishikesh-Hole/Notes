@@ -243,3 +243,56 @@ else
 fi
 
 
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+1
+
+#!/bin/bash
+
+# Variables (replace these with your actual values)
+SPN_CLIENT_ID="your-client-id"
+TENANT_ID="your-tenant-id"
+SITE_URL="https://your-sharepoint-site-url" # e.g., "https://yourtenant.sharepoint.com/sites/yoursite"
+LIBRARY_NAME="Documents" # Name of the document library
+FOLDER_PATH="Shared Documents/FolderName" # Path within the document library where the file should be uploaded
+FILE_TO_UPLOAD="/path/to/your/file.txt" # Path to the file you want to upload
+PKCS12_CERT="/path/to/your/private_certificate.pfx" # Path to your PKCS#12 certificate file
+CERT_PASSWORD_FILE="/path/to/your/password_file" # Path to the file containing your certificate password
+
+# Extract certificate password
+CERT_PASSWORD=$(cat "$CERT_PASSWORD_FILE")
+
+# Get Access Token
+TOKEN_RESPONSE=$(curl -s --request POST \
+  --url "https://login.microsoftonline.com/$TENANT_ID/oauth2/v2.0/token" \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode "grant_type=client_credentials" \
+  --data-urlencode "client_id=$SPN_CLIENT_ID" \
+  --data-urlencode "scope=https://graph.microsoft.com/.default" \
+  --cert "$PKCS12_CERT:$CERT_PASSWORD" \
+  --cert-type P12)
+
+ACCESS_TOKEN=$(echo "$TOKEN_RESPONSE" | grep -o '"access_token":"[^"]*' | sed 's/"access_token":"//')
+
+if [ -z "$ACCESS_TOKEN" ]; then
+  echo "Failed to retrieve access token"
+  exit 1
+fi
+
+# Upload file to SharePoint
+UPLOAD_URL="${SITE_URL}/_api/web/GetFolderByServerRelativeUrl('${LIBRARY_NAME}/${FOLDER_PATH}')/Files/add(url='$(basename "$FILE_TO_UPLOAD")',overwrite=true)"
+
+RESPONSE=$(curl -s --request POST \
+  --url "$UPLOAD_URL" \
+  --header "Authorization: Bearer $ACCESS_TOKEN" \
+  --header "accept: application/json;odata=verbose" \
+  --header "Content-Type: application/octet-stream" \
+  --data-binary "@$FILE_TO_UPLOAD")
+
+if echo "$RESPONSE" | grep -q '"Error"' ; then
+  echo "File upload failed"
+  echo "Response: $RESPONSE"
+else
+  echo "File uploaded successfully"
+fi
+
+
