@@ -373,3 +373,13 @@ if echo "$v_curl_output" | grep -qi "error"; then
 else
     echo "File uploaded successfully!"
 fi
+
+
+/////////////////////////////
+
+
+Your mentorship has been a cornerstone of my career growth, offering me the direction and confidence I needed to succeed. Through your guidance, I've learned to approach challenges with a strategic mindset and a deeper understanding of my goals. The impact you've had on my development is immeasurable, and I feel incredibly fortunate to have had you as a mentor.
+
+
+Your mentorship has been a guiding force in my career, shaping both my professional growth and personal development. The knowledge and insights you've shared have empowered me to navigate challenges with confidence and clarity. I'm deeply grateful for your unwavering support and invaluable guidance, which have had a profound impact on my journey.
+
