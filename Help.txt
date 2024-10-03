@@ -1,28 +1,19 @@
-Here's a feedback structure for a Scrum Master to provide excellent feedback on both "continue doing" and "have more impact":
+Here’s a template you can use to share positive feedback with HR after a technical interview:
 
 ---
 
-**Subject:** Feedback on Your Work and Impact
+**Subject:** Positive Feedback on Technical Interview – [Candidate Name]
 
-Hi [Colleague's Name],
+Dear [HR's Name],
 
-I wanted to take a moment to provide feedback on your recent contributions to the team. Your work has been truly valuable, and I’d like to highlight a few areas where you're excelling and areas where you can have an even greater impact.
+I hope you're doing well. I wanted to share my feedback on [Candidate Name] following the technical interview conducted on [Date]. I’m pleased to inform you that [Candidate Name] has successfully cleared the technical round. They demonstrated a strong understanding of [mention key technical areas discussed, e.g., problem-solving, coding skills, system architecture] and showed great potential to be a valuable addition to the team.
 
-### Continue Doing:
-- **Collaboration and Team Spirit:** Your willingness to support others and collaborate effectively is a real asset to the team. Keep up the great teamwork.
-- **Proactiveness in Problem Solving:** You have a great ability to identify potential issues early and bring them to the team’s attention. This helps us stay on track during sprints.
-- **Attention to Detail:** The precision with which you handle tasks ensures high-quality work. Your thoroughness really shows in the final product.
-
-### Have More Impact:
-- **Take Initiative in Leading Discussions:** You’ve been doing great in contributing ideas. By stepping up to lead more discussions during retrospectives or sprint planning, you can further shape the team’s direction.
-- **Drive Cross-Team Collaboration:** You already communicate well within our team. Expanding your collaboration to other teams or stakeholders could create more alignment and drive broader success.
-- **Share Your Expertise:** You have strong technical and process knowledge. Sharing more of that expertise in mentoring or coaching less experienced team members will amplify your influence across the team.
-
-Overall, your work has been excellent, and I believe with these adjustments, you’ll have an even greater impact on the team’s success.
+Please feel free to let me know if you need any further details.
 
 Best regards,  
-[Your Name]
+[Your Name]  
+[Your Position]
 
 ---
 
-This structure provides clear, positive feedback while suggesting concrete ways to have more impact.
+This format highlights the candidate’s success and readiness for the next steps.
