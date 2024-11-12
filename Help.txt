@@ -1,19 +1,20 @@
-Here’s a template you can use to share positive feedback with HR after a technical interview:
+Here’s the ready-to-copy text:
 
 ---
 
-**Subject:** Positive Feedback on Technical Interview – [Candidate Name]
+**Strengths Demonstrated:**
 
-Dear [HR's Name],
+- **Commitment to Learning and Skill Development**: This year, I achieved 25 skill badges and am just two badges away from completing my gold certificate. This reflects my dedication to enhancing my technical expertise and staying current with industry standards, which has directly contributed to my effectiveness in various projects.
+- **Adaptability in New Roles**: I transitioned to a new project through internal mobility, quickly adapting by completing all knowledge transfer (KT) sessions and delivering on an initial assignment within my first month. This shows my ability to swiftly learn and contribute in unfamiliar environments.
+- **Operational Efficiency and Cost Savings**: I led feed and server decommissioning initiatives, successfully retiring obsolete systems and reducing infrastructure costs by 20%. I also streamlined decommissioning protocols, improving process efficiency by 40%.
+- **Attention to Data Integrity**: When implementing data changes in production, I ensured accuracy and minimized disruptions, demonstrating my reliability in handling sensitive updates in live environments.
 
-I hope you're doing well. I wanted to share my feedback on [Candidate Name] following the technical interview conducted on [Date]. I’m pleased to inform you that [Candidate Name] has successfully cleared the technical round. They demonstrated a strong understanding of [mention key technical areas discussed, e.g., problem-solving, coding skills, system architecture] and showed great potential to be a valuable addition to the team.
+**Examples of How to Better Demonstrate These Behaviors Going Forward:**
 
-Please feel free to let me know if you need any further details.
-
-Best regards,  
-[Your Name]  
-[Your Position]
+- **Further Knowledge Sharing**: I plan to extend my impact by mentoring team members, sharing my expertise from achieving multiple skill badges, and helping others improve their technical skills. This will strengthen our team’s knowledge base and enhance collaborative problem-solving.
+- **Enhanced Proactive Communication**: To improve project alignment and reduce bottlenecks, I will proactively communicate progress on deliverables and challenges with stakeholders. This will keep everyone informed and support smoother project execution.
+- **Expanding Technical Depth in New Projects**: In my new role, I aim to further deepen my understanding of project-specific technologies and processes. This will allow me to take on more complex responsibilities and deliver higher-impact results in upcoming assignments.
 
 ---
 
-This format highlights the candidate’s success and readiness for the next steps.
+This text is formatted for easy copy-pasting into your review.
