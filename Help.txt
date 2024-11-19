@@ -1,31 +1,63 @@
-Certainly! Here’s how you can add that to the "Strengths Demonstrated" section as a separate point:
+import hashlib
+import os
+from datetime import datetime
 
-- **Timely and Efficient Task Completion**: I consistently complete tasks ahead of schedule, demonstrating strong time management and a fast turnaround time. This efficiency allows me to contribute to project momentum and meet team goals promptly, even under tight deadlines. 
+def generate_control_file(feed_file, business_date, instance):
+    # Extract file name without the path
+    file_name = os.path.basename(feed_file)
+    
+    # Get metadata
+    try:
+        record_count = sum(1 for line in open(feed_file))  # Total number of lines in the file
+        header_exists = 1 if record_count > 0 else 0  # Assuming header exists if file is not empty
+        trailer_exists = 1 if record_count > 1 else 0  # Assuming trailer exists if there is more than one line
+        md5_checksum = hashlib.md5(open(feed_file, 'rb').read()).hexdigest()  # Generate MD5 checksum
+    except FileNotFoundError:
+        print(f"Feed file {feed_file} not found.")
+        return
 
-This emphasizes both your speed and reliability in delivering results.
+    # Generate the control file content
+    control_content = (
+        f"Business_Date|Instance|File_Name|Record_Count|Header_Exists|Trailer_Exists|MD5_CheckSum\n"
+        f"{business_date}|{instance}|{file_name}|{record_count}|{header_exists}|{trailer_exists}|{md5_checksum}"
+    )
 
-Here’s a way to mention your commitment to completing all mandatory training on time:
+    # Control file name
+    control_file = feed_file.replace(".txt", ".ctl")
 
-"I consistently complete all mandatory training on time, demonstrating my commitment to compliance, continuous learning, and aligning with organizational standards. This proactive approach ensures that I stay informed about required policies and best practices, contributing to a safe and compliant work environment." 
+    # Write control content to the control file
+    with open(control_file, 'w') as f:
+        f.write(control_content)
 
-This wording shows responsibility and dedication to organizational expectations.
+    print(f"Control file created: {control_file}")
 
-Here’s a refined version with a separate point focused on teamwork:
+# Example usage
+generate_control_file(
+    feed_file="OBS_GROUPACCOUNTING_LuxGGATM_30092024_105533.txt",  # Replace with your feed file path
+    business_date="2024-09-30",  # Replace with your business date
+    instance="uat"  # Replace with your instance
+)
 
----
 
-**Examples of How to Better Demonstrate These Behaviors Going Forward:**
 
-- **Commitment to Continuous Learning**: I plan to further develop my skills through additional certifications and training, allowing me to independently tackle complex tasks and stay updated with industry advancements.
+---------------------------------------------
 
-- **Adaptability in Dynamic Environments**: I aim to remain flexible and open to feedback, enabling me to quickly adjust to new responsibilities or changes in project requirements. This adaptability will help me contribute effectively, regardless of shifting priorities.
+import hashlib
 
-- **Problem-Solving and Initiative**: I will focus on strengthening my problem-solving skills, taking the initiative to find solutions to challenges without needing extensive guidance. This approach will enhance my ability to independently contribute to project success.
+def generate_md5_checksum(file_path):
+    try:
+        # Read the file in binary mode
+        with open(file_path, 'rb') as f:
+            file_data = f.read()
+        # Generate the MD5 checksum
+        md5_checksum = hashlib.md5(file_data).hexdigest()
+        print(f"MD5 Checksum: {md5_checksum}")
+        return md5_checksum
+    except FileNotFoundError:
+        print(f"File not found: {file_path}")
+        return None
 
-- **Focus on Team Success**: While I excel as an individual contributor, I am also committed to supporting my team’s goals. I’ll actively collaborate, share insights, and assist colleagues when needed to foster a positive, productive team environment where everyone can thrive.
-
-Driving Innovation and Contributing Ideas: I aim to enhance my impact by proactively bringing new ideas and innovative solutions to the team. By staying curious and exploring creative approaches, I can help improve our processes, optimize efficiency, and drive continuous improvement within our projects.
----
-
-This structure provides a well-rounded view, balancing your individual strengths with a strong commitment to team collaboration.
+# Example usage
+file_path = "OBS_GROUPACCOUNTING_LuxGGATM_30092024_105533.txt"  # Replace with your file path
+generate_md5_checksum(file_path)
 
