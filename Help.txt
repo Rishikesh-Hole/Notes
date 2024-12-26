@@ -1,63 +1,40 @@
-import hashlib
-import os
-from datetime import datetime
+import logging
 
-def generate_control_file(feed_file, business_date, instance):
-    # Extract file name without the path
-    file_name = os.path.basename(feed_file)
-    
-    # Get metadata
-    try:
-        record_count = sum(1 for line in open(feed_file))  # Total number of lines in the file
-        header_exists = 1 if record_count > 0 else 0  # Assuming header exists if file is not empty
-        trailer_exists = 1 if record_count > 1 else 0  # Assuming trailer exists if there is more than one line
-        md5_checksum = hashlib.md5(open(feed_file, 'rb').read()).hexdigest()  # Generate MD5 checksum
-    except FileNotFoundError:
-        print(f"Feed file {feed_file} not found.")
-        return
+class Logger:
+    _instance = None  # Class attribute to store the singleton instance
 
-    # Generate the control file content
-    control_content = (
-        f"Business_Date|Instance|File_Name|Record_Count|Header_Exists|Trailer_Exists|MD5_CheckSum\n"
-        f"{business_date}|{instance}|{file_name}|{record_count}|{header_exists}|{trailer_exists}|{md5_checksum}"
-    )
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+            cls._instance._initialize_logger()
+        return cls._instance
 
-    # Control file name
-    control_file = feed_file.replace(".txt", ".ctl")
+    def _initialize_logger(self):
+        """Private method to configure the logger."""
+        self.logger = logging.getLogger("KafkaServiceLogger")
+        self.logger.setLevel(logging.INFO)
 
-    # Write control content to the control file
-    with open(control_file, 'w') as f:
-        f.write(control_content)
+        # Create console handler
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
 
-    print(f"Control file created: {control_file}")
+        # Create formatter and add it to the handler
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        console_handler.setFormatter(formatter)
 
-# Example usage
-generate_control_file(
-    feed_file="OBS_GROUPACCOUNTING_LuxGGATM_30092024_105533.txt",  # Replace with your feed file path
-    business_date="2024-09-30",  # Replace with your business date
-    instance="uat"  # Replace with your instance
-)
+        # Add handler to the logger
+        self.logger.addHandler(console_handler)
 
+    def get_logger(self):
+        """Public method to access the logger instance."""
+        return self.logger
 
+# Usage
+logger1 = Logger().get_logger()
+logger1.info("This is the first log message.")
 
----------------------------------------------
+logger2 = Logger().get_logger()
+logger2.info("This is the second log message.")
 
-import hashlib
-
-def generate_md5_checksum(file_path):
-    try:
-        # Read the file in binary mode
-        with open(file_path, 'rb') as f:
-            file_data = f.read()
-        # Generate the MD5 checksum
-        md5_checksum = hashlib.md5(file_data).hexdigest()
-        print(f"MD5 Checksum: {md5_checksum}")
-        return md5_checksum
-    except FileNotFoundError:
-        print(f"File not found: {file_path}")
-        return None
-
-# Example usage
-file_path = "OBS_GROUPACCOUNTING_LuxGGATM_30092024_105533.txt"  # Replace with your file path
-generate_md5_checksum(file_path)
-
+# Verifying the Singleton
+print(logger1 is logger2)  # Output: True
