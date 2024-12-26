@@ -34,3 +34,78 @@ logger2.info("This is the second log message.")
 
 # Verifying the Singleton
 print(logger1 is logger2)  # Output: True
+
+
+###############################################################################
+import unittest
+import logging
+from io import StringIO
+from threading import Thread
+from ..logger import Logger
+
+# Assuming Logger is defined as shown earlier
+class LoggerTest(unittest.TestCase):
+
+    def test_singleton_behavior(self):
+        """Test that Logger class creates only one instance."""
+        logger1 = Logger().get_logger()
+        logger2 = Logger().get_logger()
+
+        # Both logger instances should point to the same object
+        self.assertIs(logger1, logger2)
+
+    def test_logging_output(self):
+        """Test that Logger correctly logs messages."""
+        # Redirect log output to a StringIO stream
+        log_stream = StringIO()
+        stream_handler = logging.StreamHandler(log_stream)
+        formatter = logging.Formatter('%(message)s')
+        stream_handler.setFormatter(formatter)
+
+        logger = Logger().get_logger()
+        logger.addHandler(stream_handler)  # Add custom handler
+
+        # Log a message
+        test_message = "Test log message"
+        logger.info(test_message)
+
+        # Flush and retrieve log contents
+        stream_handler.flush()
+        log_contents = log_stream.getvalue().strip()
+
+        # Check that the message was logged
+        self.assertIn(test_message, log_contents)
+
+    def test_multithreaded_logging(self):
+        """Test that logger works correctly in a multithreaded environment."""
+        messages = []
+        log_stream = StringIO()
+        stream_handler = logging.StreamHandler(log_stream)
+        formatter = logging.Formatter('%(message)s')
+        stream_handler.setFormatter(formatter)
+
+        logger = Logger().get_logger()
+        logger.addHandler(stream_handler)  # Add custom handler
+
+        def log_message(i):
+            message = f"Thread-{i} logging"
+            messages.append(message)
+            logger.info(message)
+
+        # Create and start multiple threads
+        threads = [Thread(target=log_message, args=(i,)) for i in range(5)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        # Flush and retrieve log contents
+        stream_handler.flush()
+        log_contents = log_stream.getvalue().strip()
+
+        # Check that all thread messages are logged
+        for message in messages:
+            self.assertIn(message, log_contents)
+
+if __name__ == "__main__":
+    unittest.main()
