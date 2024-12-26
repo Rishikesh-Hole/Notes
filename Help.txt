@@ -1,32 +1,28 @@
 import logging
+import threading
 
-class Logger:
-    _instance = None  # Class attribute to store the singleton instance
+class SingletonMeta(type):
+    _instances = {}
+    _lock = threading.Lock()  # Lock for thread safety
 
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-            cls._instance._initialize_logger()
-        return cls._instance
+    def __call__(cls, *args, **kwargs):
+        with cls._lock:  # Ensure only one thread can access this block at a time
+            if cls not in cls._instances:
+                cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
 
-    def _initialize_logger(self):
-        """Private method to configure the logger."""
+class Logger(metaclass=SingletonMeta):
+    def __init__(self):
         self.logger = logging.getLogger("KafkaServiceLogger")
         self.logger.setLevel(logging.INFO)
 
-        # Create console handler
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.INFO)
-
-        # Create formatter and add it to the handler
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        console_handler.setFormatter(formatter)
-
-        # Add handler to the logger
-        self.logger.addHandler(console_handler)
+        # Add handler only if not already added
+        if not self.logger.hasHandlers():
+            handler = logging.StreamHandler()
+            handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+            self.logger.addHandler(handler)
 
     def get_logger(self):
-        """Public method to access the logger instance."""
         return self.logger
 
 # Usage
