@@ -64,9 +64,9 @@ public class TlsCertLoader {
         try {
             DAB.TlsCert tlsCert = new DAB.TlsCert();
 
-            // Decode Base64-encoded TLS certificate
-            byte[] decodedCert = Base64.getDecoder().decode(TestDataFileHandler.FilePaths.TLS_CERT_BASE64);
-            
+            // Decode URL-safe Base64 encoded TLS certificate
+            byte[] decodedCert = Base64.getUrlDecoder().decode(TestDataFileHandler.FilePaths.TLS_CERT_BASE64);
+
             // Write to a temporary file
             Path certPath = Files.write(
                 Files.createTempFile("tls_cert", ".p12"),
@@ -81,12 +81,15 @@ public class TlsCertLoader {
             // Set TLS certificate in DAB instance
             dab.setTlsCert(tlsCert);
 
-            System.out.println("TLS Certificate loaded successfully from Base64.");
+            System.out.println("TLS Certificate loaded successfully from Base64 (URL-Safe).");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
+
+
+cat cert.p12 | base64 | tr '/+' '_-' | tr -d '='
 
 
