@@ -12,3 +12,81 @@ Path certPath = Files.write(Files.createTempFile("tls_cert", ".p12"), decodedCer
 tlsCert.setPath(certPath.toAbsolutePath().toString());
 tlsCert.setPassword(TestDataFileHandler.FilePaths.TLS_CERT_PASSWORD);  // Password is already stored
 dab.setTlsCert(tlsCert);
+
+
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Base64;
+
+public class TlsCertLoader {
+    public static void main(String[] args) {
+        try {
+            DAB.TlsCert tlsCert = new DAB.TlsCert();
+
+            // Decode Base64-encoded TLS certificate
+            byte[] decodedCert = Base64.getDecoder().decode(TestDataFileHandler.FilePaths.TLS_CERT_BASE64);
+            
+            // Write to a temporary file
+            Path certPath = Files.write(
+                Files.createTempFile("tls_cert", ".p12"),
+                decodedCert,
+                StandardOpenOption.WRITE
+            );
+
+            // Set the certificate path and password
+            tlsCert.setPath(certPath.toAbsolutePath().toString());
+            tlsCert.setPassword(TestDataFileHandler.FilePaths.TLS_CERT_PASSWORD);
+
+            // Set TLS certificate in DAB instance
+            dab.setTlsCert(tlsCert);
+
+            System.out.println("TLS Certificate loaded successfully from Base64.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+##################################################################
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Base64;
+
+public class TlsCertLoader {
+    public static void main(String[] args) {
+        try {
+            DAB.TlsCert tlsCert = new DAB.TlsCert();
+
+            // Decode Base64-encoded TLS certificate
+            byte[] decodedCert = Base64.getDecoder().decode(TestDataFileHandler.FilePaths.TLS_CERT_BASE64);
+            
+            // Write to a temporary file
+            Path certPath = Files.write(
+                Files.createTempFile("tls_cert", ".p12"),
+                decodedCert,
+                StandardOpenOption.WRITE
+            );
+
+            // Set the certificate path and password
+            tlsCert.setPath(certPath.toAbsolutePath().toString());
+            tlsCert.setPassword(TestDataFileHandler.FilePaths.TLS_CERT_PASSWORD);
+
+            // Set TLS certificate in DAB instance
+            dab.setTlsCert(tlsCert);
+
+            System.out.println("TLS Certificate loaded successfully from Base64.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
