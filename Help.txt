@@ -154,3 +154,77 @@ cat cert.p12 | base64 | tr '/+' '_-' | tr -d '='
         </dependencies>
     </dependencyManagement>
 </project>
+
+
+
+#######################################
+
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
+
+@ExtendWith(MockitoExtension.class)
+class DgPipelineConfigServiceImplTest {
+
+    @Mock
+    private DgPipelineConfigDAO dgPipelineConfigDAO;
+
+    @InjectMocks
+    private DgPipelineConfigServiceImpl dgPipelineConfigService;
+
+    private List<DgPipelineConfig> sampleConfigs;
+
+    @BeforeEach
+    void setUp() {
+        sampleConfigs = Arrays.asList(new DgPipelineConfig(), new DgPipelineConfig());
+    }
+
+    @Test
+    void testSaveAllDgPipelineConfigs() {
+        // Given
+        doNothing().when(dgPipelineConfigDAO).saveAll(sampleConfigs);
+
+        // When
+        dgPipelineConfigService.saveAllDgPipelineConfigs(sampleConfigs);
+
+        // Then
+        verify(dgPipelineConfigDAO, times(1)).saveAll(sampleConfigs);
+    }
+
+    @Test
+    void testDeleteAllDgPipelineConfig() {
+        // Given
+        doNothing().when(dgPipelineConfigDAO).deleteAll();
+
+        // When
+        dgPipelineConfigService.deleteAllDgPipelineConfig();
+
+        // Then
+        verify(dgPipelineConfigDAO, times(1)).deleteAll();
+    }
+
+    @Test
+    @Transactional
+    void testRefreshPipelineConfig() {
+        // Given
+        doNothing().when(dgPipelineConfigDAO).deleteAll();
+        doNothing().when(dgPipelineConfigDAO).saveAll(sampleConfigs);
+
+        // When
+        dgPipelineConfigService.refreshPipelineConfig(sampleConfigs);
+
+        // Then
+        verify(dgPipelineConfigDAO, times(1)).deleteAll();
+        verify(dgPipelineConfigDAO, times(1)).saveAll(sampleConfigs);
+    }
+}
