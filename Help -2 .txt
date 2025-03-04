@@ -391,3 +391,5 @@ public class PipelineEntity {
 }
 
 
+ObjectMapper objectMapper = new ObjectMapper();
+JsonNode scheduleJson = objectMapper.readTree("{\"frequency\":\"daily\",\"month\":[1,2],\"monthDay\":[1,3],\"weekDay\":[1,5]}");
