@@ -393,3 +393,92 @@ public class PipelineEntity {
 
 ObjectMapper objectMapper = new ObjectMapper();
 JsonNode scheduleJson = objectMapper.readTree("{\"frequency\":\"daily\",\"month\":[1,2],\"monthDay\":[1,3],\"weekDay\":[1,5]}");
+
+
+
+
+
+
+)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.sql.Timestamp;
+import java.time.LocalTime;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class DgPipelineConfigTest {
+
+    private DgPipelineConfig config;
+
+    @BeforeEach
+    void setUp() {
+        config = new DgPipelineConfig();
+    }
+
+    @Test
+    void testGettersAndSetters() throws Exception {
+        config.setPipelineId("123");
+        config.setSourceId("source-1");
+        config.setSourceInstanceId("instance-1");
+        config.setEffectiveFrom(Timestamp.valueOf("2023-03-01 10:15:30.123456"));
+        config.setEffectiveTo(Timestamp.valueOf("2023-03-02 11:16:31.123456"));
+        config.setCreatedByUser("admin");
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode schedule = objectMapper.readTree("{\"cron\": \"0 0 * * *\"}");
+        config.setSchedule(schedule);
+        
+        config.setVersion(1L);
+        config.setPipelineSlaTime(LocalTime.of(12, 30));
+        config.setPipelineSlaTimezone("UTC");
+        config.setFeedPeriodScope("daily");
+        config.setFeedContent("JSON");
+        config.setRegion("US");
+        config.setFunctionalArea("Finance");
+        config.setFirstFeedGroup("Group1");
+        config.setSecondFeedGroup("Group2");
+        config.setThirdFeedGroup("Group3");
+        config.setFeedType("TypeA");
+        config.setCriticalFeed(true);
+        config.setBusinessProcess("ProcessA");
+        config.setFeedSourceGroup("SourceGroup1");
+        config.setFeedSourceInstanceId("Instance1");
+        config.setFeedFrequency("Hourly");
+        config.setIngestionType("Batch");
+        config.setPipelineDescription("Test Pipeline");
+        config.setFeedSourceType("External");
+
+        assertEquals("123", config.getPipelineId());
+        assertEquals("source-1", config.getSourceId());
+        assertEquals("instance-1", config.getSourceInstanceId());
+        assertEquals(Timestamp.valueOf("2023-03-01 10:15:30.123456"), config.getEffectiveFrom());
+        assertEquals(Timestamp.valueOf("2023-03-02 11:16:31.123456"), config.getEffectiveTo());
+        assertEquals("admin", config.getCreatedByUser());
+        assertEquals(schedule, config.getSchedule());
+        assertEquals(1L, config.getVersion());
+        assertEquals(LocalTime.of(12, 30), config.getPipelineSlaTime());
+        assertEquals("UTC", config.getPipelineSlaTimezone());
+        assertEquals("daily", config.getFeedPeriodScope());
+        assertEquals("JSON", config.getFeedContent());
+        assertEquals("US", config.getRegion());
+        assertEquals("Finance", config.getFunctionalArea());
+        assertEquals("Group1", config.getFirstFeedGroup());
+        assertEquals("Group2", config.getSecondFeedGroup());
+        assertEquals("Group3", config.getThirdFeedGroup());
+        assertEquals("TypeA", config.getFeedType());
+        assertTrue(config.isCriticalFeed());
+        assertEquals("ProcessA", config.getBusinessProcess());
+        assertEquals("SourceGroup1", config.getFeedSourceGroup());
+        assertEquals("Instance1", config.getFeedSourceInstanceId());
+        assertEquals("Hourly", config.getFeedFrequency());
+        assertEquals("Batch", config.getIngestionType());
+        assertEquals("Test Pipeline", config.getPipelineDescription());
+        assertEquals("External", config.getFeedSourceType());
+    }
+}
