@@ -1,0 +1,305 @@
+Here is the full implementation of a Spring Boot application to process the JSON response you shared. It maps the JSON data to a model class, converts it into a JPA entity, and persists it into a database using Spring Data JPA.
+
+---
+
+### **1. Define the DTO Model**
+This DTO represents the JSON structure.
+
+```java
+package com.example.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public class PipelineDto {
+    private String pipelineId;
+    private String sourceId;
+    private String sourceInstanceId;
+    private String effectiveFrom;
+    private String effectiveTo;
+    private String createdByUser;
+    private int version;
+    private String pipelineSlaTime;
+    private String pipelineSlaTimezone;
+    private String feedPeriodScope;
+    private String feedContentType;
+    private String region;
+    private String functionalArea;
+    private String feedGroup1;
+    private String feedGroup2;
+    private String feedGroup3;
+    private String feedType;
+    private boolean criticalFeed;
+    private String businessProcess;
+    private String feedSourceGroup;
+    private String feedSourceInstanceId;
+    private String feedFrequency;
+    private String ingestionType;
+    private String pipelineDescription;
+    private String feedSourceType;
+    private Schedule schedule;
+
+    @Data
+    public static class Schedule {
+        private String frequency;
+        private List<Integer> month;
+        private List<Integer> monthDay;
+        private List<Integer> weekDay;
+    }
+}
+```
+
+---
+
+### **2. Define the JPA Entity**
+This entity is mapped to the database.
+
+```java
+package com.example.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.List;
+
+@Entity
+@Data
+@Table(name = "pipeline")
+public class PipelineEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String pipelineId;
+
+    private String sourceId;
+    private String sourceInstanceId;
+    private String effectiveFrom;
+    private String effectiveTo;
+    private String createdByUser;
+    private int version;
+    private String pipelineSlaTime;
+    private String pipelineSlaTimezone;
+    private String feedPeriodScope;
+    private String feedContentType;
+    private String region;
+    private String functionalArea;
+    private String feedGroup1;
+    private String feedGroup2;
+    private String feedGroup3;
+    private String feedType;
+    private boolean criticalFeed;
+    private String businessProcess;
+    private String feedSourceGroup;
+    private String feedSourceInstanceId;
+    private String feedFrequency;
+    private String ingestionType;
+    private String pipelineDescription;
+    private String feedSourceType;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
+    private ScheduleEntity schedule;
+}
+
+@Entity
+@Data
+@Table(name = "schedule")
+class ScheduleEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String frequency;
+
+    @ElementCollection
+    @CollectionTable(name = "schedule_months", joinColumns = @JoinColumn(name = "schedule_id"))
+    @Column(name = "month")
+    private List<Integer> month;
+
+    @ElementCollection
+    @CollectionTable(name = "schedule_month_days", joinColumns = @JoinColumn(name = "schedule_id"))
+    @Column(name = "month_day")
+    private List<Integer> monthDay;
+
+    @ElementCollection
+    @CollectionTable(name = "schedule_week_days", joinColumns = @JoinColumn(name = "schedule_id"))
+    @Column(name = "week_day")
+    private List<Integer> weekDay;
+}
+```
+
+---
+
+### **3. Create a Mapper to Convert DTO to Entity**
+This mapper converts `PipelineDto` to `PipelineEntity`.
+
+```java
+package com.example.mapper;
+
+import com.example.dto.PipelineDto;
+import com.example.entity.PipelineEntity;
+import com.example.entity.ScheduleEntity;
+import org.springframework.stereotype.Component;
+
+@Component
+public class PipelineMapper {
+    public PipelineEntity toEntity(PipelineDto dto) {
+        PipelineEntity entity = new PipelineEntity();
+        entity.setPipelineId(dto.getPipelineId());
+        entity.setSourceId(dto.getSourceId());
+        entity.setSourceInstanceId(dto.getSourceInstanceId());
+        entity.setEffectiveFrom(dto.getEffectiveFrom());
+        entity.setEffectiveTo(dto.getEffectiveTo());
+        entity.setCreatedByUser(dto.getCreatedByUser());
+        entity.setVersion(dto.getVersion());
+        entity.setPipelineSlaTime(dto.getPipelineSlaTime());
+        entity.setPipelineSlaTimezone(dto.getPipelineSlaTimezone());
+        entity.setFeedPeriodScope(dto.getFeedPeriodScope());
+        entity.setFeedContentType(dto.getFeedContentType());
+        entity.setRegion(dto.getRegion());
+        entity.setFunctionalArea(dto.getFunctionalArea());
+        entity.setFeedGroup1(dto.getFeedGroup1());
+        entity.setFeedGroup2(dto.getFeedGroup2());
+        entity.setFeedGroup3(dto.getFeedGroup3());
+        entity.setFeedType(dto.getFeedType());
+        entity.setCriticalFeed(dto.isCriticalFeed());
+        entity.setBusinessProcess(dto.getBusinessProcess());
+        entity.setFeedSourceGroup(dto.getFeedSourceGroup());
+        entity.setFeedSourceInstanceId(dto.getFeedSourceInstanceId());
+        entity.setFeedFrequency(dto.getFeedFrequency());
+        entity.setIngestionType(dto.getIngestionType());
+        entity.setPipelineDescription(dto.getPipelineDescription());
+        entity.setFeedSourceType(dto.getFeedSourceType());
+
+        if (dto.getSchedule() != null) {
+            ScheduleEntity scheduleEntity = new ScheduleEntity();
+            scheduleEntity.setFrequency(dto.getSchedule().getFrequency());
+            scheduleEntity.setMonth(dto.getSchedule().getMonth());
+            scheduleEntity.setMonthDay(dto.getSchedule().getMonthDay());
+            scheduleEntity.setWeekDay(dto.getSchedule().getWeekDay());
+            entity.setSchedule(scheduleEntity);
+        }
+
+        return entity;
+    }
+}
+```
+
+---
+
+### **4. Create the Repository**
+This repository handles database operations.
+
+```java
+package com.example.repository;
+
+import com.example.entity.PipelineEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface PipelineRepository extends JpaRepository<PipelineEntity, Long> {
+}
+```
+
+---
+
+### **5. Create the Service Layer**
+This service handles business logic.
+
+```java
+package com.example.service;
+
+import com.example.dto.PipelineDto;
+import com.example.entity.PipelineEntity;
+import com.example.mapper.PipelineMapper;
+import com.example.repository.PipelineRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PipelineService {
+    private final PipelineRepository repository;
+    private final PipelineMapper mapper;
+
+    public PipelineService(PipelineRepository repository, PipelineMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
+
+    public PipelineEntity savePipeline(PipelineDto dto) {
+        PipelineEntity entity = mapper.toEntity(dto);
+        return repository.save(entity);
+    }
+}
+```
+
+---
+
+### **6. Create the Controller**
+This controller exposes an API to accept JSON and save it to the database.
+
+```java
+package com.example.controller;
+
+import com.example.dto.PipelineDto;
+import com.example.entity.PipelineEntity;
+import com.example.service.PipelineService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/pipelines")
+public class PipelineController {
+    private final PipelineService service;
+
+    public PipelineController(PipelineService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    public ResponseEntity<PipelineEntity> createPipeline(@RequestBody PipelineDto dto) {
+        PipelineEntity savedPipeline = service.savePipeline(dto);
+        return ResponseEntity.ok(savedPipeline);
+    }
+}
+```
+
+---
+
+### **7. Configure `application.properties`**
+Configure database settings in `src/main/resources/application.properties`.
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/pipelinedb
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+---
+
+### **8. Run the Application**
+- Start a MySQL database.
+- Run the Spring Boot application.
+- Use Postman or `curl` to send a JSON request.
+
+---
+
+### **Summary**
+- `PipelineDto`: Holds the JSON response data.
+- `PipelineEntity`: Represents database table structure.
+- `PipelineMapper`: Converts DTO to Entity.
+- `PipelineRepository`: Handles database operations.
+- `PipelineService`: Business logic layer.
+- `PipelineController`: Exposes a REST endpoint.
+
+This implementation properly handles lists of integers and persists them efficiently using Spring Data JPA. Let me know if you need modifications!
