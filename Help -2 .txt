@@ -303,3 +303,91 @@ spring.jpa.show-sql=true
 - `PipelineController`: Exposes a REST endpoint.
 
 This implementation properly handles lists of integers and persists them efficiently using Spring Data JPA. Let me know if you need modifications!
+
+
+
+
+
+
+
+
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+
+package com.example.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.List;
+
+@Entity
+@Data
+@Table(name = "pipeline")
+public class PipelineEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String pipelineId;
+
+    private String sourceId;
+    private String sourceInstanceId;
+    private String effectiveFrom;
+    private String effectiveTo;
+    private String createdByUser;
+    private int version;
+    private String pipelineSlaTime;
+    private String pipelineSlaTimezone;
+    private String feedPeriodScope;
+    private String feedContentType;
+    private String region;
+    private String functionalArea;
+    private String feedGroup1;
+    private String feedGroup2;
+    private String feedGroup3;
+    private String feedType;
+    private boolean criticalFeed;
+    private String businessProcess;
+    private String feedSourceGroup;
+    private String feedSourceInstanceId;
+    private String feedFrequency;
+    private String ingestionType;
+    private String pipelineDescription;
+    private String feedSourceType;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
+    private ScheduleEntity schedule;
+
+    @Entity
+    @Data
+    @Table(name = "schedule")
+    public static class ScheduleEntity {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        private String frequency;
+
+        @ElementCollection
+        @CollectionTable(name = "schedule_months", joinColumns = @JoinColumn(name = "schedule_id"))
+        @Column(name = "month")
+        private List<Integer> month;
+
+        @ElementCollection
+        @CollectionTable(name = "schedule_month_days", joinColumns = @JoinColumn(name = "schedule_id"))
+        @Column(name = "month_day")
+        private List<Integer> monthDay;
+
+        @ElementCollection
+        @CollectionTable(name = "schedule_week_days", joinColumns = @JoinColumn(name = "schedule_id"))
+        @Column(name = "week_day")
+        private List<Integer> weekDay;
+    }
+}
+
+
