@@ -482,3 +482,62 @@ class DgPipelineConfigTest {
         assertEquals("External", config.getFeedSourceType());
     }
 }
+
+
+
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class DgPipelineConfigTest {
+
+    @Test
+    void testAllArgsConstructor() {
+        DgPipelineConfig config = new DgPipelineConfig(
+                "123", "source-1", "instance-1", 
+                Timestamp.valueOf("2023-03-01 10:15:30.123456"), 
+                Timestamp.valueOf("2023-03-02 11:16:31.123456"), 
+                "admin", null, 1L, LocalTime.of(12, 30), "UTC", 
+                "daily", "JSON", "US", "Finance", "Group1", "Group2", 
+                "Group3", "TypeA", true, "ProcessA", "SourceGroup1", 
+                "Instance1", "Hourly", "Batch", "Test Pipeline", "External"
+        );
+        assertNotNull(config);
+        assertEquals("123", config.getPipelineId());
+    }
+
+    @Test
+    void testBuilderPattern() {
+        DgPipelineConfig config = DgPipelineConfig.builder()
+                .pipelineId("123")
+                .sourceId("source-1")
+                .sourceInstanceId("instance-1")
+                .effectiveFrom(Timestamp.valueOf("2023-03-01 10:15:30.123456"))
+                .effectiveTo(Timestamp.valueOf("2023-03-02 11:16:31.123456"))
+                .createdByUser("admin")
+                .version(1L)
+                .pipelineSlaTime(LocalTime.of(12, 30))
+                .pipelineSlaTimezone("UTC")
+                .feedPeriodScope("daily")
+                .feedContent("JSON")
+                .region("US")
+                .functionalArea("Finance")
+                .firstFeedGroup("Group1")
+                .secondFeedGroup("Group2")
+                .thirdFeedGroup("Group3")
+                .feedType("TypeA")
+                .criticalFeed(true)
+                .businessProcess("ProcessA")
+                .feedSourceGroup("SourceGroup1")
+                .feedSourceInstanceId("Instance1")
+                .feedFrequency("Hourly")
+                .ingestionType("Batch")
+                .pipelineDescription("Test Pipeline")
+                .feedSourceType("External")
+                .build();
+
+        assertNotNull(config);
+        assertEquals("123", config.getPipelineId());
+    }
+}
