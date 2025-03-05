@@ -511,7 +511,10 @@ class DgPipelineConfigTest {
     }
 
     @Test
-    void testBuilderPattern() {
+    void testBuilderPattern() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode scheduleJson = objectMapper.readTree("{\"frequency\":\"daily\", \"time\":\"12:00\"}");
+
         DgPipelineConfig config = DgPipelineConfig.builder()
                 .pipelineId("123")
                 .sourceId("source-1")
@@ -519,6 +522,7 @@ class DgPipelineConfigTest {
                 .effectiveFrom(Timestamp.valueOf("2023-03-01 10:15:30.123456"))
                 .effectiveTo(Timestamp.valueOf("2023-03-02 11:16:31.123456"))
                 .createdByUser("admin")
+                .schedule(scheduleJson)  // Testing JsonNode
                 .version(1L)
                 .pipelineSlaTime(LocalTime.of(12, 30))
                 .pipelineSlaTimezone("UTC")
@@ -542,6 +546,18 @@ class DgPipelineConfigTest {
 
         assertNotNull(config);
         assertEquals("123", config.getPipelineId());
+        assertEquals(scheduleJson, config.getSchedule()); // Validate JsonNode
+
+        // Validate toString()
+        String expectedToString = "DgPipelineConfig(pipelineId=123, sourceId=source-1, sourceInstanceId=instance-1, " +
+                "effectiveFrom=2023-03-01 10:15:30.123456, effectiveTo=2023-03-02 11:16:31.123456, createdByUser=admin, " +
+                "schedule=" + scheduleJson + ", version=1, pipelineSlaTime=12:30, pipelineSlaTimezone=UTC, " +
+                "feedPeriodScope=daily, feedContent=JSON, region=US, functionalArea=Finance, firstFeedGroup=Group1, " +
+                "secondFeedGroup=Group2, thirdFeedGroup=Group3, feedType=TypeA, criticalFeed=true, businessProcess=ProcessA, " +
+                "feedSourceGroup=SourceGroup1, feedSourceInstanceId=Instance1, feedFrequency=Hourly, ingestionType=Batch, " +
+                "pipelineDescription=Test Pipeline, feedSourceType=External)";
+
+        assertEquals(expectedToString, config.toString());
     }
 
     @Test
