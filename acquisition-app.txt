@@ -1818,3 +1818,506 @@ CREATE INDEX idx_feed_legal_entity_request_id ON feed_legal_entity(request_id);
 CREATE INDEX idx_storage_details_request_id ON storage_details(request_id);
 CREATE INDEX idx_tenant_instance_request_id ON tenant_instance(request_id);
 
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Perfect ✅ Rishikesh.
+Here is the **best coding order** for your Data Acquisition backend so you get a working system early and keep building step-by-step (like ServiceNow).
+
+---
+
+# ✅ Recommended Implementation Order (Best for V1)
+
+## Phase 0 — Project bootstrap (Day 1)
+
+### 0.1 Create Spring Boot skeleton
+
+* `pom.xml` (web, validation, JPA, postgres, flyway, lombok, springdoc-openapi)
+* `application.yml`
+* basic package structure (as finalized)
+
+### 0.2 Add Flyway + DB connection
+
+* Run `V1__init_data_acquisition_schema.sql`
+* Run `V2__business_model_request_bridge.sql`
+* Run `V3__business_seed_master_data.sql` (optional now)
+
+✅ Output: Application starts and DB schema is ready.
+
+---
+
+# Phase 1 — Technical model core (Request + Stage lifecycle) ✅ (Must first)
+
+## 1.1 Implement Technical JPA Entities + Repositories
+
+Create entities for these tables:
+
+* `DaRequestEntity`
+* `DaStageDefinitionEntity`
+* `DaRequestStageEntity`
+* `DaRequestStageDataEntity`
+
+Repositories:
+
+* `DaRequestRepository`
+* `DaStageDefinitionRepository`
+* `DaRequestStageRepository`
+* `DaRequestStageDataRepository`
+
+✅ Output: you can create request + stage rows.
+
+---
+
+## 1.2 Implement “New Request” flow (Landing → New Request)
+
+### API:
+
+`POST /requests/new`
+
+What happens:
+
+1. generate `request_id + request_number`
+2. create `da_request`
+3. create 7 rows in `da_request_stage` (INITIATE is current)
+4. write audit log “REQUEST_CREATED”
+
+✅ Output: request id appears on UI top.
+
+---
+
+## 1.3 Implement “Existing Requests” list
+
+### API:
+
+`GET /requests?mine=true`
+
+Fetch from `da_request` table.
+
+✅ Output: UI existing request tab works.
+
+---
+
+# Phase 2 — Stage submit (persist only on submit) ✅
+
+This is your core rule.
+
+## 2.1 Implement Stage Submit API
+
+### API:
+
+`POST /requests/{requestId}/stages/{stageCode}/submit`
+
+What happens:
+
+1. validate stage is editable
+2. create/update `da_request_stage_data` with payload JSON
+3. mark stage status = SUBMITTED
+4. create approvals (next phase)
+5. audit log “STAGE_SUBMITTED”
+
+✅ Output: stage submit works end-to-end.
+
+---
+
+# Phase 3 — Approvals engine (Reject wins immediately) ✅
+
+## 3.1 Implement approval tables JPA
+
+Entities:
+
+* `DaApprovalGroupEntity`
+* `DaApprovalTaskEntity`
+
+Repositories:
+
+* `DaApprovalGroupRepository`
+* `DaApprovalTaskRepository`
+
+---
+
+## 3.2 Implement Approval Generation on submit
+
+When stage submitted:
+
+* call HRI API to fetch approvers (and allow overrides from UI)
+* create approval group + tasks
+* stage goes to WAITING approval
+
+---
+
+## 3.3 Implement Approve / Reject API
+
+### API:
+
+`POST /approvals/{approvalTaskId}/action`
+
+Rules:
+
+* **REJECT wins immediately**
+* if ANY ONE approves → stage APPROVED
+* on stage APPROVED → unlock next stage and set it current
+* on REJECT → stage REJECTED and becomes editable again (new version on resubmit)
+
+✅ Output: full ServiceNow approval loop works.
+
+---
+
+# Phase 4 — Assignee feature (ServiceNow assigned-to) ✅
+
+## 4.1 Implement assignee table JPA
+
+Entity:
+
+* `DaRequestStageAssigneeEntity`
+  Repository:
+* `DaRequestStageAssigneeRepository`
+
+---
+
+## 4.2 Add stage assignment APIs
+
+### APIs:
+
+* `POST /requests/{requestId}/stages/{stageCode}/assignees`
+* `GET /requests/{requestId}/stages/{stageCode}/assignees`
+
+Rules:
+
+* requester can assign one/many assignees
+* assignee can edit/submit only that stage
+* requester can always edit all stages
+
+✅ Output: multi-person 7-stage workflow becomes real.
+
+---
+
+# Phase 5 — Preview APIs (No DB persist) ✅
+
+Now implement:
+
+* `POST /preview/swc`
+* `POST /preview/tenant`
+* `POST /preview/dataset`
+
+These call:
+
+* HRI
+* AppDir
+* DGP
+
+Return data directly to UI.
+
+(Optional) store in preview cache table.
+
+✅ Output: auto-population works without persistence.
+
+---
+
+# Phase 6 — Business model persistence (only on submit) ✅
+
+Now integrate business tables.
+
+## 6.1 Implement Business JPA Entities + Repositories
+
+All 17 business tables.
+
+## 6.2 Implement BusinessDataSubmitService
+
+On stage submit:
+
+* persist business bundle using request_id bridge
+* upsert masters if needed
+
+## 6.3 Implement BusinessDataQueryService
+
+For existing request load:
+
+* return `BusinessDataBundleDto`
+
+✅ Output: UI can open existing request and see saved business info.
+
+---
+
+# Phase 7 — Excel upload (Stage 2,4,5) ✅
+
+Implement:
+
+* Apache POI parser
+* validations
+* persist parsed rows into business tables (on submit)
+
+APIs:
+
+* `POST /requests/{requestId}/stages/{stageCode}/upload`
+
+✅ Output: bulk feed/dataset entry works.
+
+---
+
+# Phase 8 — Timeline + My Work tabs ✅
+
+## 8.1 Timeline API
+
+From `da_audit_log`
+
+## 8.2 Approver pending/completed
+
+From `da_approval_task`
+
+## 8.3 Assignee pending tasks (optional)
+
+From `da_request_stage_assignee + da_request_stage`
+
+✅ Output: landing approve tab works perfectly.
+
+---
+
+# Phase 9 — Security + Swagger (Good to add early) ✅
+
+### Swagger
+
+Add `springdoc-openapi` now (no harm).
+
+### Auth / RBAC
+
+Backend should implement:
+
+* JWT authentication
+* role checks (requester/assignee/approver)
+* stage-level authorization
+
+Istio will handle:
+
+* rate limiting / spam filtering
+* WAF style controls
+* ingress protection
+
+✅ Output: production-ready access control.
+
+---
+
+# ⭐ Best Practical Order (If you want fastest UI demo)
+
+If you want UI demo in minimum time:
+
+1. Create Request
+2. Stage Submit (store JSON only)
+3. Approval approve/reject
+4. Move stage left → right
+5. Existing request list
+6. My approvals pending tab
+
+Then add business persistence + excel upload.
+
+---
+
+If you want, next I’ll give you the **exact first 5 classes to implement** (with package + class names) so you can start coding immediately.
+
+
+
+------------------------------------------------------------------------------------------
+
+Great question ✅ Rishikesh.
+Your app can easily become slow because it has **workflow + approvals + large business data + excel uploads + external API calls**.
+
+Below are the **best practical ways** to keep it fast (without over-engineering).
+
+---
+
+# ✅ 1) Keep UI “load request” APIs lightweight
+
+### Problem
+
+If UI opens an existing request and backend loads **all business tables + approvals + timeline + stage data** in one API → slow.
+
+### Recommendation
+
+Split into small APIs:
+
+* **Request Header API** (fastest)
+* **Current Stage Status API**
+* **Stage Data API (only that stage)**
+* **Approvals API**
+* **Timeline API (lazy load / pagination)**
+
+✅ UI loads fast and fetches details on demand.
+
+---
+
+# ✅ 2) Avoid N+1 queries in JPA
+
+### Common issue
+
+Business model has many relationships (feed_group → datasets → attributes etc.)
+
+### Fix
+
+Use:
+
+* `@EntityGraph` for controlled eager fetch
+* custom JPQL/SQL queries for heavy screens
+* avoid `FetchType.EAGER` globally
+
+✅ Big improvement.
+
+---
+
+# ✅ 3) Use pagination everywhere
+
+Mandatory for:
+
+* Existing request list
+* Approve pending list
+* Audit timeline
+* Dataset lists under a feed group
+
+Use:
+
+* `Pageable`
+* `LIMIT/OFFSET`
+
+✅ prevents full table scans.
+
+---
+
+# ✅ 4) Indexing (most important DB speed lever)
+
+You already have some indexes in technical model.
+
+Add indexes on frequently queried fields like:
+
+* `da_request(status)`
+* `da_request(requester_user_id)`
+* `da_request(current_stage_code)`
+* `da_approval_task(approver_user_id, status)`
+* `da_request_stage_assignee(assignee_user_id)`
+
+For business model:
+
+* always index `request_id` bridge columns
+
+✅ This alone keeps app fast under load.
+
+---
+
+# ✅ 5) Don’t store huge stage JSON unnecessarily
+
+Your `da_request_stage_data.payload_json` can become large.
+
+Suggestions:
+
+* store only **required fields**
+* avoid storing duplicate reference data inside payload
+* keep schema versioning to evolve
+
+✅ less DB size + faster reads.
+
+---
+
+# ✅ 6) External API calls must be fast and protected
+
+Your preview APIs call:
+
+* HRI
+* AppDir
+* DGP
+
+### Best practices:
+
+* timeouts (connect + read)
+* retries only for safe errors (like timeouts)
+* circuit breaker (optional)
+* caching for repeated lookups (short TTL)
+
+Example:
+
+* cache tenant details for 10 minutes
+* cache dataset info for 10 minutes
+
+✅ prevents slow UI experience.
+
+---
+
+# ✅ 7) Use async processing for heavy tasks
+
+Things that can be async:
+
+* email notifications
+* webhook/Teams notifications
+* audit enrichment
+* large excel validation report generation
+
+Keep core submit synchronous, but move extras async using:
+
+* `da_outbox_event` table (best)
+* background scheduler/worker
+
+✅ submit stays fast.
+
+---
+
+# ✅ 8) Excel upload performance tips
+
+Excel parsing can become heavy.
+
+Do:
+
+* validate file size limit
+* stream parsing if possible
+* validate row count limit (ex: max 5k rows)
+* parse + persist in batch inserts
+
+✅ avoids JVM memory spike.
+
+---
+
+# ✅ 9) Use proper transaction boundaries
+
+Don’t wrap everything in one huge transaction.
+
+Example:
+
+* Stage submit transaction should include only DB writes required
+* Notification/outbox can be separate
+
+✅ reduces lock time and contention.
+
+---
+
+# ✅ 10) Observability from start (so you can detect slowness)
+
+Add:
+
+* request correlation id
+* API response time logs
+* slow query logs (hibernate)
+* metrics (Micrometer + Prometheus later)
+
+This helps you identify:
+
+* which API is slow
+* which query is slow
+* which external API is slow
+
+✅ keeps performance under control.
+
+---
+
+# ⭐ My top 5 “must-do” for V1 (simple + powerful)
+
+If you implement only these, your app will be fast:
+
+1. Pagination on lists
+2. Indexing on technical + bridge `request_id`
+3. Avoid N+1 JPA issues
+4. External API timeouts + caching
+5. Lazy load heavy data (don’t return everything in one API)
+
+---
+
+If you want, I can give you a **recommended API design** for “load request screen” so UI stays super fast (like ServiceNow).
