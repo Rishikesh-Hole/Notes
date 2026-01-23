@@ -1,0 +1,1820 @@
+data-acquisition-service/
+ ├── src/main/java/com/company/dataacquisition/
+ │    ├── DataAcquisitionApplication.java
+ │
+ │    ├── api/
+ │    │    ├── controller/
+ │    │    │
+ │    │    │    ├── landing/
+ │    │    │    │    └── LandingController.java
+ │    │    │    │         ├── GET /landing/request-tabs
+ │    │    │    │         └── GET /landing/approve-tabs
+ │    │    │    │
+ │    │    │    ├── request/
+ │    │    │    │    ├── DataAcquisitionRequestController.java
+ │    │    │    │    ├── RequestQueryController.java
+ │    │    │    │    └── RequestTimelineController.java
+ │    │    │    │
+ │    │    │    ├── stage/
+ │    │    │    │    ├── StageController.java
+ │    │    │    │    ├── StageSubmissionController.java
+ │    │    │    │    ├── StageUploadController.java
+ │    │    │    │    └── StageEditPolicyController.java
+ │    │    │    │
+ │    │    │    ├── approval/
+ │    │    │    │    ├── ApprovalController.java
+ │    │    │    │    └── MyWorkController.java
+ │    │    │    │
+ │    │    │    ├── assignment/                                  ✅ NEW (ServiceNow-like stage assignee)
+ │    │    │    │    └── AssignmentController.java
+ │    │    │    │         ├── GET  /requests/{id}/assignments
+ │    │    │    │         ├── POST /requests/{id}/stages/{stageCode}/assignees
+ │    │    │    │         └── DELETE /requests/{id}/stages/{stageCode}/assignees/{userId}
+ │    │    │    │
+ │    │    │    ├── preview/
+ │    │    │    │    └── PreviewController.java
+ │    │    │    │
+ │    │    │    ├── analytics/
+ │    │    │    │    └── AnalyticsController.java                    (future)
+ │    │    │    │
+ │    │    │    └── system/
+ │    │    │         ├── HealthController.java
+ │    │    │         └── VersionController.java
+ │    │    │
+ │    │    ├── dto/
+ │    │    │
+ │    │    │    ├── request/
+ │    │    │    │    ├── CreateRequestDto.java
+ │    │    │    │    ├── RequestResponseDto.java
+ │    │    │    │    ├── RequestSummaryDto.java
+ │    │    │    │    ├── RequestSearchFilterDto.java
+ │    │    │    │    ├── RequestEditModeDto.java
+ │    │    │    │    └── RequestHeaderDto.java
+ │    │    │    │
+ │    │    │    ├── stage/
+ │    │    │    │    ├── StageCodeDto.java
+ │    │    │    │    ├── StageStateDto.java
+ │    │    │    │    ├── StageDataDto.java
+ │    │    │    │    ├── StageSubmitRequestDto.java
+ │    │    │    │    ├── StageSubmitResponseDto.java
+ │    │    │    │    ├── StageRejectDto.java
+ │    │    │    │    └── StageEditPolicyDto.java
+ │    │    │    │
+ │    │    │    ├── approval/
+ │    │    │    │    ├── ApprovalGroupDto.java
+ │    │    │    │    ├── ApprovalActionRequestDto.java
+ │    │    │    │    ├── ApprovalActionResponseDto.java
+ │    │    │    │    ├── ApprovalSummaryDto.java
+ │    │    │    │    ├── ApproverDto.java
+ │    │    │    │    └── MyApprovalTaskDto.java
+ │    │    │    │
+ │    │    │    ├── assignment/                                  ✅ NEW
+ │    │    │    │    ├── StageAssigneeDto.java
+ │    │    │    │    ├── AssignStageAssigneesRequestDto.java
+ │    │    │    │    ├── RemoveStageAssigneeRequestDto.java
+ │    │    │    │    └── AssignmentSummaryDto.java
+ │    │    │    │
+ │    │    │    ├── preview/
+ │    │    │    │    ├── PreviewSwcRequestDto.java
+ │    │    │    │    ├── PreviewTenantRequestDto.java
+ │    │    │    │    ├── PreviewDatasetRequestDto.java
+ │    │    │    │    ├── PreviewSwcResponseDto.java
+ │    │    │    │    ├── PreviewTenantResponseDto.java
+ │    │    │    │    ├── PreviewDatasetResponseDto.java
+ │    │    │    │    └── PreviewApproversResponseDto.java
+ │    │    │    │
+ │    │    │    ├── upload/
+ │    │    │    │    ├── UploadStageFileResponseDto.java
+ │    │    │    │    ├── ExcelValidationErrorDto.java
+ │    │    │    │    └── ParsedRowsSummaryDto.java
+ │    │    │    │
+ │    │    │    ├── timeline/
+ │    │    │    │    ├── TimelineEventDto.java
+ │    │    │    │    └── AuditLogDto.java
+ │    │    │    │
+ │    │    │    ├── business/
+ │    │    │    │    ├── BusinessDataBundleDto.java
+ │    │    │    │    ├── FeedGroupDto.java
+ │    │    │    │    ├── InputFeedDto.java
+ │    │    │    │    ├── DatasetDto.java
+ │    │    │    │    ├── DatasetAttributeDto.java
+ │    │    │    │    ├── LensDto.java
+ │    │    │    │    ├── TenantDto.java
+ │    │    │    │    ├── TenantInstanceDto.java
+ │    │    │    │    ├── StorageDetailsDto.java
+ │    │    │    │    ├── PipelineDto.java
+ │    │    │    │    └── SourceSystemDto.java
+ │    │    │    │
+ │    │    │    └── error/
+ │    │    │         ├── ApiErrorDto.java
+ │    │    │         └── ValidationErrorDto.java
+ │    │    │
+ │    │    ├── mapper/
+ │    │    │    ├── RequestMapper.java
+ │    │    │    ├── StageMapper.java
+ │    │    │    ├── ApprovalMapper.java
+ │    │    │    ├── UploadMapper.java
+ │    │    │    ├── PreviewMapper.java
+ │    │    │    ├── TimelineMapper.java
+ │    │    │    ├── MyWorkMapper.java
+ │    │    │    ├── BusinessMapper.java
+ │    │    │    └── AssignmentMapper.java                         ✅ NEW
+ │    │    │
+ │    │    └── advice/
+ │    │         └── GlobalExceptionHandler.java
+ │
+ │    ├── application/
+ │    │    ├── facade/
+ │    │    │    └── RequestWorkflowFacade.java
+ │    │    │
+ │    │    ├── service/
+ │    │    │
+ │    │    │    ├── request/
+ │    │    │    │    ├── DataAcquisitionRequestService.java
+ │    │    │    │    ├── RequestQueryService.java
+ │    │    │    │    └── RequestTimelineService.java
+ │    │    │    │
+ │    │    │    ├── stage/
+ │    │    │    │    ├── StageService.java
+ │    │    │    │    ├── StageSubmissionService.java
+ │    │    │    │    ├── StageDataService.java
+ │    │    │    │    └── StageEditPolicyService.java
+ │    │    │    │
+ │    │    │    ├── approval/
+ │    │    │    │    ├── ApprovalService.java
+ │    │    │    │    ├── ApprovalGroupService.java
+ │    │    │    │    └── MyWorkService.java
+ │    │    │    │
+ │    │    │    ├── assignment/                                  ✅ NEW
+ │    │    │    │    ├── AssignmentService.java
+ │    │    │    │    └── AssignmentValidationService.java
+ │    │    │    │
+ │    │    │    ├── preview/
+ │    │    │    │    ├── PreviewService.java
+ │    │    │    │    └── ReferenceDataService.java
+ │    │    │    │
+ │    │    │    ├── upload/
+ │    │    │    │    ├── UploadService.java
+ │    │    │    │    └── UploadValidationService.java
+ │    │    │    │
+ │    │    │    ├── business/
+ │    │    │    │    ├── BusinessDataSubmitService.java
+ │    │    │    │    ├── BusinessDataQueryService.java
+ │    │    │    │    ├── BusinessMasterUpsertService.java
+ │    │    │    │    └── BusinessDataValidationService.java
+ │    │    │    │
+ │    │    │    ├── technical/
+ │    │    │    │    ├── TechnicalRequestService.java
+ │    │    │    │    ├── TechnicalStageService.java
+ │    │    │    │    ├── TechnicalApprovalService.java
+ │    │    │    │    ├── TechnicalAuditService.java
+ │    │    │    │    ├── TechnicalOutboxService.java
+ │    │    │    │    ├── TechnicalReferenceSnapshotService.java
+ │    │    │    │    └── TechnicalAssignmentService.java            ✅ NEW (technical assignee persistence)
+ │    │    │    │
+ │    │    │    └── notification/
+ │    │    │         ├── NotificationService.java                    (optional)
+ │    │    │         ├── EmailNotificationService.java               (optional)
+ │    │    │         └── WebhookNotificationService.java             (optional future)
+ │    │    │
+ │    │    └── workflow/
+ │    │         ├── engine/
+ │    │         │    ├── WorkflowEngine.java
+ │    │         │    ├── StageTransitionManager.java
+ │    │         │    └── WorkflowValidator.java
+ │    │         │
+ │    │         ├── model/
+ │    │         │    ├── WorkflowContext.java
+ │    │         │    ├── StageDefinition.java
+ │    │         │    ├── StageSubmitPayload.java
+ │    │         │    └── ApprovalGroupDefinition.java
+ │    │         │
+ │    │         ├── resolver/
+ │    │         │    ├── ApproverResolver.java
+ │    │         │    ├── HriApproverResolver.java
+ │    │         │    ├── ApprovalGroupBuilder.java
+ │    │         │    ├── ApproverOverrideMerger.java
+ │    │         │    ├── AssigneeResolver.java                      ✅ NEW (auto-populate assignees)
+ │    │         │    └── AssigneeOverrideMerger.java                ✅ NEW (requester can override)
+ │    │         │
+ │    │         └── policy/
+ │    │              ├── ApprovalPolicy.java
+ │    │              ├── AnyOneApproveRejectWinsPolicy.java
+ │    │              └── AnyNApprovePolicy.java                       (future)
+ │
+ │    ├── domain/
+ │    │    ├── model/
+ │    │    │    ├── DataAcquisitionRequest.java
+ │    │    │    ├── RequestStageInstance.java
+ │    │    │    ├── RequestStageData.java
+ │    │    │    ├── RequestApprovalGroup.java
+ │    │    │    ├── RequestApproval.java
+ │    │    │    ├── RequestAuditLog.java
+ │    │    │    └── UploadedFileMetadata.java
+ │    │    │
+ │    │    ├── technical/
+ │    │    │    ├── DaRequest.java
+ │    │    │    ├── DaRequestStage.java
+ │    │    │    ├── DaStageDefinition.java
+ │    │    │    ├── DaApprovalGroup.java
+ │    │    │    ├── DaApprovalTask.java
+ │    │    │    ├── DaAuditLog.java
+ │    │    │    ├── DaOutboxEvent.java
+ │    │    │    ├── DaReferenceSnapshot.java
+ │    │    │    └── DaStageAssignee.java                            ✅ NEW
+ │    │    │
+ │    │    ├── business/
+ │    │    │    ├── OnboardingRequest.java
+ │    │    │    ├── FeedGroup.java
+ │    │    │    ├── InputFeed.java
+ │    │    │    ├── Dataset.java
+ │    │    │    ├── DatasetAttribute.java
+ │    │    │    ├── Lens.java
+ │    │    │    ├── Tenant.java
+ │    │    │    ├── TenantInstance.java
+ │    │    │    ├── StorageDetails.java
+ │    │    │    ├── StorageRegion.java
+ │    │    │    ├── Mandator.java
+ │    │    │    ├── LegalEntity.java
+ │    │    │    ├── BusinessDivision.java
+ │    │    │    ├── FeedLegalEntity.java
+ │    │    │    ├── Pipeline.java
+ │    │    │    ├── PipelineFeedDataset.java
+ │    │    │    └── SourceSystem.java
+ │    │    │
+ │    │    ├── enums/
+ │    │    │    ├── RequestStatus.java
+ │    │    │    ├── StageCode.java
+ │    │    │    ├── StageStatus.java
+ │    │    │    ├── ApprovalStatus.java
+ │    │    │    ├── ApprovalGroupType.java
+ │    │    │    ├── ApprovalPolicyType.java
+ │    │    │    ├── AppReleaseMode.java
+ │    │    │    ├── AuditEventType.java
+ │    │    │    ├── ParticipantRoleType.java                        ✅ NEW (REQUESTER/ASSIGNEE/APPROVER)
+ │    │    │    └── AssigneeType.java                               ✅ NEW (PRIMARY/BACKUP/ADHOC)
+ │    │    │
+ │    │    └── rules/
+ │    │         ├── StageRules.java
+ │    │         ├── ApprovalRules.java
+ │    │         ├── EditPolicyRules.java
+ │    │         └── UploadRules.java
+ │
+ │    ├── infrastructure/
+ │    │
+ │    │    ├── persistence/
+ │    │    │
+ │    │    │    ├── technical/
+ │    │    │    │    ├── entity/
+ │    │    │    │    │    ├── DaRequestEntity.java
+ │    │    │    │    │    ├── DaStageDefinitionEntity.java
+ │    │    │    │    │    ├── DaRequestStageEntity.java
+ │    │    │    │    │    ├── DaRequestStageDataEntity.java
+ │    │    │    │    │    ├── DaApprovalGroupEntity.java
+ │    │    │    │    │    ├── DaApprovalTaskEntity.java
+ │    │    │    │    │    ├── DaAuditLogEntity.java
+ │    │    │    │    │    ├── DaOutboxEventEntity.java
+ │    │    │    │    │    ├── DaReferenceSnapshotEntity.java
+ │    │    │    │    │    └── DaStageAssigneeEntity.java            ✅ NEW (stage assignees)
+ │    │    │    │    │
+ │    │    │    │    └── repository/
+ │    │    │    │         ├── DaRequestRepository.java
+ │    │    │    │         ├── DaStageDefinitionRepository.java
+ │    │    │    │         ├── DaRequestStageRepository.java
+ │    │    │    │         ├── DaRequestStageDataRepository.java
+ │    │    │    │         ├── DaApprovalGroupRepository.java
+ │    │    │    │         ├── DaApprovalTaskRepository.java
+ │    │    │    │         ├── DaAuditLogRepository.java
+ │    │    │    │         ├── DaOutboxEventRepository.java
+ │    │    │    │         ├── DaReferenceSnapshotRepository.java
+ │    │    │    │         └── DaStageAssigneeRepository.java         ✅ NEW
+ │    │    │
+ │    │    │    ├── business/
+ │    │    │    │    ├── entity/
+ │    │    │    │    │    ├── OnboardingRequestEntity.java
+ │    │    │    │    │    ├── FeedGroupEntity.java
+ │    │    │    │    │    ├── InputFeedEntity.java
+ │    │    │    │    │    ├── DatasetEntity.java
+ │    │    │    │    │    ├── DatasetAttributeEntity.java
+ │    │    │    │    │    ├── LensEntity.java
+ │    │    │    │    │    ├── TenantEntity.java
+ │    │    │    │    │    ├── TenantInstanceEntity.java
+ │    │    │    │    │    ├── StorageDetailsEntity.java
+ │    │    │    │    │    ├── StorageRegionEntity.java
+ │    │    │    │    │    ├── MandatorEntity.java
+ │    │    │    │    │    ├── LegalEntityEntity.java
+ │    │    │    │    │    ├── BusinessDivisionEntity.java
+ │    │    │    │    │    ├── FeedLegalEntityEntity.java
+ │    │    │    │    │    ├── PipelineEntity.java
+ │    │    │    │    │    ├── PipelineFeedDatasetEntity.java
+ │    │    │    │    │    └── SourceSystemEntity.java
+ │    │    │    │    │
+ │    │    │    │    └── repository/
+ │    │    │    │         ├── OnboardingRequestRepository.java
+ │    │    │    │         ├── FeedGroupRepository.java
+ │    │    │    │         ├── InputFeedRepository.java
+ │    │    │    │         ├── DatasetRepository.java
+ │    │    │    │         ├── DatasetAttributeRepository.java
+ │    │    │    │         ├── LensRepository.java
+ │    │    │    │         ├── TenantRepository.java
+ │    │    │    │         ├── TenantInstanceRepository.java
+ │    │    │    │         ├── StorageDetailsRepository.java
+ │    │    │    │         ├── StorageRegionRepository.java
+ │    │    │    │         ├── MandatorRepository.java
+ │    │    │    │         ├── LegalEntityRepository.java
+ │    │    │    │         ├── BusinessDivisionRepository.java
+ │    │    │    │         ├── FeedLegalEntityRepository.java
+ │    │    │    │         ├── PipelineRepository.java
+ │    │    │    │         ├── PipelineFeedDatasetRepository.java
+ │    │    │    │         └── SourceSystemRepository.java
+ │    │    │
+ │    │    │    └── repository/
+ │    │    │         └── RequestQueryRepository.java
+ │    │    │
+ │    │    ├── external/
+ │    │    │    ├── client/
+ │    │    │    │    ├── HriClient.java
+ │    │    │    │    ├── AppDirClient.java
+ │    │    │    │    └── DgpClient.java
+ │    │    │    │
+ │    │    │    ├── impl/
+ │    │    │    │    ├── HriWebClient.java
+ │    │    │    │    ├── AppDirWebClient.java
+ │    │    │    │    └── DgpWebClient.java
+ │    │    │    │
+ │    │    │    ├── dto/
+ │    │    │    │    ├── hri/
+ │    │    │    │    ├── appdir/
+ │    │    │    │    └── dgp/
+ │    │    │    │
+ │    │    │    ├── exception/
+ │    │    │    │    ├── ExternalServiceException.java
+ │    │    │    │    ├── ExternalServiceTimeoutException.java
+ │    │    │    │    └── ExternalServiceBadResponseException.java
+ │    │    │    │
+ │    │    │    └── config/
+ │    │    │         ├── HttpClientConfig.java
+ │    │    │         ├── HriClientConfig.java
+ │    │    │         ├── AppDirClientConfig.java
+ │    │    │         └── DgpClientConfig.java
+ │    │    │
+ │    │    ├── file/
+ │    │    │    ├── excel/
+ │    │    │    │    ├── ExcelParser.java
+ │    │    │    │    ├── FeedDetailsExcelParser.java
+ │    │    │    │    ├── DatasetDetailsExcelParser.java
+ │    │    │    │    ├── DatasetMetadataExcelParser.java
+ │    │    │    │    └── ExcelValidationService.java
+ │    │    │    │
+ │    │    │    └── storage/
+ │    │    │         ├── FileStorageService.java
+ │    │    │         ├── LocalFileStorageService.java
+ │    │    │         └── BlobFileStorageService.java
+ │    │    │
+ │    │    ├── security/
+ │    │    │    ├── config/
+ │    │    │    │    ├── SecurityConfig.java
+ │    │    │    │    └── SwaggerSecurityConfig.java                  (optional)
+ │    │    │    │
+ │    │    │    ├── filter/
+ │    │    │    │    ├── JwtAuthenticationFilter.java
+ │    │    │    │    └── RequestCorrelationFilter.java
+ │    │    │    │
+ │    │    │    ├── model/
+ │    │    │    │    ├── AuthenticatedUser.java
+ │    │    │    │    ├── UserRole.java
+ │    │    │    │    └── Permission.java                             (optional)
+ │    │    │    │
+ │    │    │    ├── service/
+ │    │    │    │    ├── CurrentUserProvider.java
+ │    │    │    │    ├── AuthorizationService.java
+ │    │    │    │    └── PermissionEvaluatorService.java             (optional)
+ │    │    │    │
+ │    │    │    └── exception/
+ │    │    │         ├── UnauthenticatedException.java
+ │    │    │         └── UnauthorizedException.java
+ │    │    │
+ │    │    └── config/
+ │    │         ├── JacksonConfig.java
+ │    │         ├── OpenApiConfig.java
+ │    │         ├── HttpSecurityHeadersConfig.java                   (optional)
+ │    │         ├── RequestLoggingConfig.java                        (optional)
+ │    │         ├── ObservabilityConfig.java
+ │    │         ├── AppModeConfig.java
+ │    │         └── JpaConfig.java
+ │
+ │    ├── common/
+ │    │    ├── exception/
+ │    │    │    ├── BusinessException.java
+ │    │    │    ├── NotFoundException.java
+ │    │    │    ├── ValidationException.java
+ │    │    │    ├── ConflictException.java
+ │    │    │    └── ForbiddenException.java
+ │    │    │
+ │    │    ├── audit/
+ │    │    │    ├── AuditPublisher.java
+ │    │    │    ├── AuditEventFactory.java
+ │    │    │    └── AuditContext.java
+ │    │    │
+ │    │    └── util/
+ │    │         ├── JsonUtils.java
+ │    │         ├── IdGenerator.java
+ │    │         └── TimeUtils.java
+ │
+ ├── src/main/resources/
+ │    ├── application.yml
+ │    ├── logback-spring.xml
+ │    └── db/migration/
+ │         ├── V1__init_data_acquisition_schema.sql
+ │         ├── V2__business_model_request_bridge.sql
+ │         ├── V3__business_seed_master_data.sql
+ │         └── V4__technical_stage_assignee.sql                     ✅ NEW (assignee table)
+ │
+ ├── src/test/java/com/company/dataacquisition/
+ │    ├── api/
+ │    ├── application/
+ │    ├── workflow/
+ │    └── integration/
+ │
+ ├── pom.xml
+ └── README.md
+
+
+
+
+Sure Rishikesh ✅
+I’ll walk you through the **FINAL COMBINED PROJECT STRUCTURE (V1 + Future-ready)** in a way that you can **start coding confidently** and also scale it later like ServiceNow.
+
+I’ll explain it layer-by-layer (top to bottom), and also explain **how each part supports your workflow + business/technical model separation**.
+
+---
+
+# ✅ 1) Big Picture Architecture (How the project is organized)
+
+Your project is a **Spring Boot monolith**, but internally it is designed like a clean enterprise system:
+
+### **API Layer**
+
+➡️ Controllers + DTOs
+**Only responsible for HTTP request/response**
+
+### **Application Layer**
+
+➡️ Services + Facade
+**Responsible for orchestration + use-cases**
+
+### **Workflow Layer**
+
+➡️ Engine + transition + validation + resolvers
+**Responsible for rules like “stage 2 only after stage 1 approved”**
+
+### **Domain Layer**
+
+➡️ Domain models + enums + rules
+**Business concepts (Request, Stage, Approval)**
+
+### **Infrastructure Layer**
+
+➡️ JPA persistence + external API clients + file parsing + security + configs
+**All technical integrations**
+
+### **Common Layer**
+
+➡️ Shared utilities + exceptions + audit helpers
+**Cross-cutting utilities**
+
+This structure ensures:
+✅ You can build fast now
+✅ You can scale later
+✅ You don’t get “controller calling repository directly” mess
+
+---
+
+# ✅ 2) Entry Point
+
+## `DataAcquisitionApplication.java`
+
+This is your Spring Boot main class.
+
+What it does:
+
+* boots application
+* loads Spring context
+* runs embedded server
+
+---
+
+# ✅ 3) API Layer (`api/`)
+
+This layer contains:
+
+* controllers (REST endpoints)
+* DTOs (input/output)
+* mappers (convert DTO ↔ domain)
+* global exception handling
+
+---
+
+## 3.1 Controllers (`api/controller/`)
+
+### A) `landing/`
+
+#### `LandingController`
+
+This exists because your UI has **Landing Page tabs**:
+
+* Request tab → “New Request” + “Existing Request”
+* Approve tab → “Pending” + “Completed”
+
+So backend must provide tab structure and counts (optional later).
+
+Example responsibilities:
+
+* return which tabs are visible based on user role
+* return counts of pending approvals (future)
+
+---
+
+### B) `request/`
+
+#### `DataAcquisitionRequestController`
+
+Main APIs like:
+
+* create request id immediately
+* fetch header info
+* submit first stage entry point
+
+#### `RequestQueryController`
+
+Supports:
+
+* existing request list (request history)
+* filtering by status/stage
+* requester view
+
+#### `RequestTimelineController`
+
+Supports:
+
+* timeline/history screen
+* audit logs for request
+
+---
+
+### C) `stage/`
+
+#### `StageController`
+
+Used for:
+
+* fetch current stage status
+* fetch stage data (business bundle + technical status)
+
+#### `StageSubmissionController`
+
+Used for:
+
+* submit stage payload → persist to business + technical tables
+* trigger approvals generation
+* lock/unlock stage transitions
+
+#### `StageUploadController`
+
+Used for:
+
+* Excel upload for stage 2,4,5
+* parse and validate template
+
+#### `StageEditPolicyController`
+
+Very important for your V1 vs FINAL rule:
+
+* In V1: allow user to modify more auto-populated data
+* In FINAL: only approver list modifiable (and few fields)
+
+This controller returns:
+
+* which fields are editable
+* which are locked
+
+---
+
+### D) `approval/`
+
+#### `ApprovalController`
+
+Approver actions:
+
+* approve
+* reject
+* add comment
+
+#### `MyWorkController`
+
+This powers Approve tab:
+
+* pending approvals for logged-in user
+* completed approvals
+
+---
+
+### E) `assignment/` ✅ NEW for ServiceNow-like flow
+
+This is for your new requirement:
+
+> Different person can fill each stage form.
+
+#### `AssignmentController`
+
+Responsibilities:
+
+* requester assigns stage assignee(s)
+* assignee list can be modified by requester
+* view who is assigned to which stage
+
+This is what makes your app “ServiceNow-like”.
+
+---
+
+### F) `preview/`
+
+#### `PreviewController`
+
+This is your “NO-DB calls” feature:
+
+* user enters SWC AA ID → backend calls HRI + AppDir → returns response
+* user enters tenant code → AppDir
+* user enters dataset id → DGP
+* return data to UI WITHOUT persisting
+
+This supports your rule:
+✅ **Persist only on submit**
+
+---
+
+### G) `system/`
+
+* `HealthController`
+* `VersionController`
+
+These are for platform support.
+
+---
+
+# ✅ 4) DTO Layer (`api/dto/`)
+
+DTOs are grouped by feature so the code stays clean.
+
+### `dto/request/`
+
+* request creation
+* request summary listing
+* header response
+
+### `dto/stage/`
+
+* stage code/state
+* stage submit payload
+* edit policy
+
+### `dto/approval/`
+
+* approval actions
+* approver list/group response
+* my work tasks
+
+### `dto/assignment/` ✅ NEW
+
+* stage assignees
+* add/remove assignees
+
+### `dto/business/`
+
+This is very important:
+It represents **Business Data Model tables data** that UI needs to show.
+
+Example:
+
+* FeedGroupDto
+* DatasetDto
+* TenantDto
+* PipelineDto
+
+Also:
+
+#### `BusinessDataBundleDto`
+
+This is the **one DTO that loads entire business model for UI** for existing request.
+
+So UI can call:
+✅ “GET existing request details” → gets full bundle.
+
+---
+
+# ✅ 5) Mapper Layer (`api/mapper/`)
+
+Mappers keep controllers clean.
+
+Examples:
+
+* `RequestMapper` → entity/domain → response DTO
+* `StageMapper` → stage state to DTO
+* `BusinessMapper` → business entities ↔ DTOs
+* `AssignmentMapper` → stage assignee mapping
+
+This is where your conversion logic stays.
+
+---
+
+# ✅ 6) Application Layer (`application/`)
+
+This is the **brain** of the application.
+
+Controllers call application services.
+
+---
+
+## 6.1 Facade (`application/facade/`)
+
+### `RequestWorkflowFacade`
+
+This is your **orchestrator**.
+
+Why you need this?
+Because stage submission is not simple:
+
+When user submits stage, you must do:
+
+1. validate stage payload
+2. persist business tables
+3. persist technical stage data
+4. generate approval tasks
+5. lock stage
+6. audit log
+7. send outbox notification
+
+Facade ensures all this happens in correct order.
+
+---
+
+## 6.2 Services (`application/service/`)
+
+### A) `request/`
+
+* create request id
+* get request header
+* list request history
+* timeline
+
+### B) `stage/`
+
+* stage status
+* stage submit
+* stage data store
+* edit policy rules
+
+### C) `approval/`
+
+* create approval group/tasks
+* approve/reject
+* resolve group based on policy
+
+### D) `assignment/` ✅ NEW
+
+This implements:
+
+* requester assigns assignee(s)
+* assignee can submit only assigned stage
+* requester can override
+
+### E) `preview/`
+
+* calls external APIs
+* combines HRI + AppDir result for stage 1
+* returns preview response
+
+### F) `upload/`
+
+* excel parse
+* excel validation
+
+### G) `business/`
+
+These services work on business tables.
+
+* `BusinessDataSubmitService`
+
+  * persists business model only on submit
+* `BusinessDataQueryService`
+
+  * loads business bundle for existing request
+* `BusinessMasterUpsertService`
+
+  * upsert master tables (legal_entity, storage_region etc.)
+* `BusinessDataValidationService`
+
+  * validations
+
+### H) `technical/`
+
+These services work on technical tables.
+
+* `TechnicalRequestService`
+* `TechnicalStageService`
+* `TechnicalApprovalService`
+* `TechnicalAuditService`
+* `TechnicalOutboxService`
+* `TechnicalReferenceSnapshotService`
+* `TechnicalAssignmentService` ✅ NEW
+
+This separation is very clean:
+✅ business logic stays in business services
+✅ workflow engine stays in technical services
+
+---
+
+# ✅ 7) Workflow Engine Layer (`application/workflow/`)
+
+This is your internal “mini workflow engine”.
+
+### `engine/`
+
+* `WorkflowEngine` → executes transitions
+* `StageTransitionManager` → left-to-right dependency
+* `WorkflowValidator` → rules for submit/edit/approve
+
+### `model/`
+
+* `WorkflowContext`
+* `StageDefinition`
+* `StageSubmitPayload`
+* `ApprovalGroupDefinition`
+
+### `resolver/`
+
+This is important because approvers/assignees can come from:
+
+* auto-populated APIs
+* requester overrides
+
+So:
+
+* `ApproverResolver`
+* `HriApproverResolver`
+* `ApprovalGroupBuilder`
+* `ApproverOverrideMerger`
+* `AssigneeResolver` ✅ NEW
+* `AssigneeOverrideMerger` ✅ NEW
+
+### `policy/`
+
+Approval rules:
+
+* `AnyOneApproveRejectWinsPolicy` ✅ your current final rule
+* `AnyNApprovePolicy` future
+
+---
+
+# ✅ 8) Domain Layer (`domain/`)
+
+This is your “pure business representation”.
+
+### `domain/model/`
+
+Generic domain objects for request lifecycle.
+
+### `domain/technical/`
+
+Domain objects for technical model.
+
+### `domain/business/`
+
+Domain objects for business model.
+
+### `domain/enums/`
+
+All enums:
+
+* stage code
+* status
+* approval status
+* app release mode (V1 vs FINAL)
+* participant role types (requester/assignee/approver)
+* assignee type (primary/backup/adhoc)
+
+### `domain/rules/`
+
+Central place for rules:
+
+* stage rules
+* approval rules
+* edit policy rules
+* upload rules
+
+---
+
+# ✅ 9) Infrastructure Layer (`infrastructure/`)
+
+This is where all “real world” stuff happens.
+
+---
+
+## 9.1 Persistence (`infrastructure/persistence/`)
+
+Separated into two models:
+
+### A) `technical/`
+
+* entities
+* repositories
+
+Tables:
+
+* da_request
+* da_request_stage
+* approvals
+* audit log
+* outbox
+* snapshot
+* stage assignees
+
+### B) `business/`
+
+* entities
+* repositories
+
+Tables:
+
+* all 17 business tables
+
+### C) `RequestQueryRepository`
+
+Cross-model queries:
+Example:
+
+* existing request list = join technical + business
+* my pending approvals = join approval tasks + request
+
+---
+
+## 9.2 External APIs (`infrastructure/external/`)
+
+Supports:
+
+* HRI API
+* AppDir API
+* DGP API
+
+Structure:
+
+* `client/` → interfaces
+* `impl/` → webclient implementation
+* `dto/` → external response mapping
+* `config/` → base urls/timeouts
+* `exception/` → errors
+
+---
+
+## 9.3 File (`infrastructure/file/`)
+
+### `excel/`
+
+* excel parsing per stage
+* validations
+
+### `storage/`
+
+* local storage now
+* blob storage later
+
+---
+
+## 9.4 Security (`infrastructure/security/`)
+
+This is your backend RBAC layer:
+
+* `SecurityConfig`
+* JWT filter
+* CurrentUserProvider
+* AuthorizationService
+* roles + permissions
+
+This ensures:
+✅ assignee can edit only assigned stage
+✅ approver can approve only assigned approvals
+✅ requester can edit all stages
+
+---
+
+## 9.5 Config (`infrastructure/config/`)
+
+* `JacksonConfig`
+* `OpenApiConfig` (Swagger)
+* `ObservabilityConfig`
+* `AppModeConfig`
+* `JpaConfig`
+
+---
+
+# ✅ 10) Common Layer (`common/`)
+
+Shared code:
+
+* `exception/` common exceptions
+* `audit/` audit publisher utilities
+* `util/` helpers
+
+---
+
+# ✅ 11) Resources + Flyway migrations
+
+```
+src/main/resources/db/migration/
+  V1__init_data_acquisition_schema.sql
+  V2__business_model_request_bridge.sql
+  V3__business_seed_master_data.sql
+```
+
+V1 = technical model
+V2 = bridge business tables with request_id
+V3 = seed master data
+
+---
+
+# ✅ How this structure supports your ServiceNow-style requirements
+
+### Requirement: 7 different people can fill 7 stages
+
+✅ Supported via:
+
+* `assignment/` controllers + services
+* `da_request_stage_assignee` technical table
+* `AuthorizationService` stage-level access control
+
+### Requirement: requester always common across stages
+
+✅ stored in `da_request.requester_user_id`
+Requester gets global access.
+
+### Requirement: assignee can edit only one stage
+
+✅ enforced using `da_request_stage_assignee` + `AuthorizationService`
+
+### Requirement: approvers vary by stage and role-based
+
+✅ supported by:
+
+* approval group type + approval policy
+* HRI resolver + override merger
+
+### Requirement: reject wins immediately and stage editable again
+
+✅ supported by:
+
+* approval policy
+* stage versioning + is_current flag
+* resubmit creates new approval cycle
+
+---
+
+# ⭐ Final takeaway
+
+This structure is **already perfect for coding** and supports:
+✅ V1 release
+✅ future stages increase
+✅ stricter FINAL release edit restrictions
+✅ ServiceNow-like assign-to per stage
+✅ approvals + notifications + audit timeline
+
+---
+
+If you want, next I can give you the **exact API list** (all endpoints) for:
+
+* requester flow
+* assignee flow
+* approver flow
+  with expected request/response DTO names.
+
+
+
+
+
+-- =========================================================
+-- V1__init_data_acquisition_schema.sql
+-- Data Acquisition Application - FINAL Technical Schema
+-- PostgreSQL
+-- =========================================================
+
+-- Optional (recommended) for UUID generation:
+-- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Or use pgcrypto:
+-- CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- ==============================
+-- 1) REQUEST
+-- ==============================
+CREATE TABLE da_request (
+    request_id              uuid PRIMARY KEY,
+    request_number          varchar(50) UNIQUE NOT NULL,
+    title                   text,
+    description             text,
+
+    requester_user_id       varchar(200) NOT NULL,
+    requester_name          varchar(200),
+
+    status                  varchar(50) NOT NULL,
+    current_stage_code      varchar(100) NOT NULL,
+
+    is_completed            boolean NOT NULL DEFAULT false,
+
+    created_at              timestamptz NOT NULL DEFAULT now(),
+    created_by              varchar(200) NOT NULL,
+    updated_at              timestamptz NOT NULL DEFAULT now(),
+    updated_by              varchar(200) NOT NULL,
+
+    row_version             int NOT NULL DEFAULT 0
+);
+
+CREATE INDEX idx_da_request_status ON da_request(status);
+CREATE INDEX idx_da_request_requester ON da_request(requester_user_id);
+CREATE INDEX idx_da_request_current_stage ON da_request(current_stage_code);
+
+
+-- ==============================
+-- 2) STAGE DEFINITIONS
+-- ==============================
+CREATE TABLE da_stage_definition (
+    stage_code              varchar(100) PRIMARY KEY,
+    stage_name              varchar(200) NOT NULL,
+    stage_order             int NOT NULL,
+
+    requires_excel_upload   boolean NOT NULL DEFAULT false,
+    excel_template_name     varchar(200),
+
+    is_active               boolean NOT NULL DEFAULT true,
+
+    created_at              timestamptz NOT NULL DEFAULT now(),
+    created_by              varchar(200) NOT NULL
+);
+
+CREATE UNIQUE INDEX uq_da_stage_definition_order ON da_stage_definition(stage_order);
+
+
+-- ==============================
+-- 3) REQUEST STAGE INSTANCE
+-- ==============================
+CREATE TABLE da_request_stage (
+    request_stage_id        uuid PRIMARY KEY,
+    request_id              uuid NOT NULL REFERENCES da_request(request_id),
+    stage_code              varchar(100) NOT NULL REFERENCES da_stage_definition(stage_code),
+
+    stage_status            varchar(50) NOT NULL,
+    stage_version           int NOT NULL DEFAULT 1,
+    is_current              boolean NOT NULL DEFAULT true,
+
+    submitted_at            timestamptz,
+    submitted_by            varchar(200),
+
+    approved_at             timestamptz,
+    approved_by             varchar(200),
+
+    rejected_at             timestamptz,
+    rejected_by             varchar(200),
+    rejection_reason        text,
+
+    created_at              timestamptz NOT NULL DEFAULT now(),
+    created_by              varchar(200) NOT NULL,
+    updated_at              timestamptz NOT NULL DEFAULT now(),
+    updated_by              varchar(200) NOT NULL,
+
+    row_version             int NOT NULL DEFAULT 0
+);
+
+CREATE INDEX idx_da_request_stage_request ON da_request_stage(request_id);
+CREATE INDEX idx_da_request_stage_stage ON da_request_stage(stage_code);
+CREATE INDEX idx_da_request_stage_status ON da_request_stage(stage_status);
+
+CREATE UNIQUE INDEX uq_da_request_stage_unique
+ON da_request_stage(request_id, stage_code, stage_version);
+
+CREATE UNIQUE INDEX uq_da_request_stage_current
+ON da_request_stage(request_id, stage_code)
+WHERE is_current = true;
+
+
+-- ==============================
+-- 4) STAGE DATA (persist only on SUBMIT)
+-- ==============================
+CREATE TABLE da_request_stage_data (
+    stage_data_id           uuid PRIMARY KEY,
+    request_stage_id        uuid NOT NULL REFERENCES da_request_stage(request_stage_id),
+
+    payload_json            jsonb NOT NULL,
+    payload_schema_version  int NOT NULL DEFAULT 1,
+
+    created_at              timestamptz NOT NULL DEFAULT now(),
+    created_by              varchar(200) NOT NULL
+);
+
+CREATE UNIQUE INDEX uq_da_stage_data_request_stage
+ON da_request_stage_data(request_stage_id);
+
+
+-- ==============================
+-- 5) PREVIEW CACHE (optional)
+-- ==============================
+CREATE TABLE da_request_stage_preview_cache (
+    preview_id              uuid PRIMARY KEY,
+    request_id              uuid NOT NULL REFERENCES da_request(request_id),
+    stage_code              varchar(100) NOT NULL REFERENCES da_stage_definition(stage_code),
+
+    preview_type            varchar(50) NOT NULL,
+    preview_key             varchar(200) NOT NULL,
+
+    preview_json            jsonb NOT NULL,
+    expires_at              timestamptz NOT NULL,
+
+    created_at              timestamptz NOT NULL DEFAULT now(),
+    created_by              varchar(200) NOT NULL
+);
+
+CREATE INDEX idx_da_preview_request_stage ON da_request_stage_preview_cache(request_id, stage_code);
+CREATE INDEX idx_da_preview_expiry ON da_request_stage_preview_cache(expires_at);
+
+
+-- ==============================
+-- 6) UPLOADED FILES (Excel + attachments)
+-- ==============================
+CREATE TABLE da_uploaded_file (
+    file_id                 uuid PRIMARY KEY,
+    request_id              uuid NOT NULL REFERENCES da_request(request_id),
+    stage_code              varchar(100) NOT NULL REFERENCES da_stage_definition(stage_code),
+
+    file_type               varchar(50) NOT NULL,
+    file_name               text NOT NULL,
+    content_type            varchar(200),
+    file_size_bytes         bigint,
+
+    storage_provider        varchar(50) NOT NULL,
+    storage_path            text NOT NULL,
+
+    uploaded_at             timestamptz NOT NULL DEFAULT now(),
+    uploaded_by             varchar(200) NOT NULL
+);
+
+CREATE INDEX idx_da_uploaded_file_request ON da_uploaded_file(request_id);
+CREATE INDEX idx_da_uploaded_file_stage ON da_uploaded_file(stage_code);
+
+
+-- ==============================
+-- 7) APPROVAL GROUP
+-- ==============================
+CREATE TABLE da_approval_group (
+    approval_group_id       uuid PRIMARY KEY,
+    request_stage_id         uuid NOT NULL REFERENCES da_request_stage(request_stage_id),
+
+    group_type              varchar(50) NOT NULL,
+    group_name              varchar(200),
+
+    approval_policy         varchar(50) NOT NULL,
+    required_approvals      int NOT NULL DEFAULT 1,
+
+    status                  varchar(50) NOT NULL,
+    resolved_at             timestamptz,
+    resolved_by             varchar(200),
+    resolved_reason         text,
+
+    group_source            varchar(50) NOT NULL DEFAULT 'HRI',
+
+    created_at              timestamptz NOT NULL DEFAULT now(),
+    created_by              varchar(200) NOT NULL,
+
+    row_version             int NOT NULL DEFAULT 0
+);
+
+CREATE INDEX idx_da_approval_group_stage ON da_approval_group(request_stage_id);
+CREATE INDEX idx_da_approval_group_status ON da_approval_group(status);
+
+
+-- ==============================
+-- 8) APPROVAL TASKS
+-- ==============================
+CREATE TABLE da_approval_task (
+    approval_task_id        uuid PRIMARY KEY,
+    approval_group_id       uuid NOT NULL REFERENCES da_approval_group(approval_group_id),
+
+    approver_user_id        varchar(200) NOT NULL,
+    approver_name           varchar(200),
+
+    status                  varchar(50) NOT NULL,
+    is_active               boolean NOT NULL DEFAULT true,
+
+    source                  varchar(50) NOT NULL DEFAULT 'HRI',
+    added_by_user           boolean NOT NULL DEFAULT false,
+
+    action_at               timestamptz,
+    action_by               varchar(200),
+    action_comment          text,
+
+    created_at              timestamptz NOT NULL DEFAULT now(),
+    created_by              varchar(200) NOT NULL,
+
+    row_version             int NOT NULL DEFAULT 0
+);
+
+CREATE INDEX idx_da_approval_task_group ON da_approval_task(approval_group_id);
+CREATE INDEX idx_da_approval_task_approver ON da_approval_task(approver_user_id);
+CREATE INDEX idx_da_approval_task_status ON da_approval_task(status);
+
+CREATE UNIQUE INDEX uq_da_approval_task_unique
+ON da_approval_task(approval_group_id, approver_user_id);
+
+
+-- ==============================
+-- 9) AUDIT LOG / TIMELINE
+-- ==============================
+CREATE TABLE da_audit_log (
+    audit_id                uuid PRIMARY KEY,
+    request_id              uuid NOT NULL REFERENCES da_request(request_id),
+
+    request_stage_id        uuid,
+    stage_code              varchar(100),
+
+    event_type              varchar(100) NOT NULL,
+    event_message           text,
+
+    actor_user_id           varchar(200) NOT NULL,
+    actor_name              varchar(200),
+
+    event_payload           jsonb,
+
+    created_at              timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_da_audit_request ON da_audit_log(request_id);
+CREATE INDEX idx_da_audit_stage ON da_audit_log(request_stage_id);
+CREATE INDEX idx_da_audit_event_type ON da_audit_log(event_type);
+
+
+-- ==============================
+-- 10) OUTBOX EVENTS (future notifications/webhooks)
+-- ==============================
+CREATE TABLE da_outbox_event (
+    outbox_event_id         uuid PRIMARY KEY,
+    request_id              uuid NOT NULL REFERENCES da_request(request_id),
+
+    event_type              varchar(100) NOT NULL,
+    payload_json            jsonb NOT NULL,
+
+    status                  varchar(50) NOT NULL DEFAULT 'PENDING',
+    retry_count             int NOT NULL DEFAULT 0,
+
+    created_at              timestamptz NOT NULL DEFAULT now(),
+    last_attempt_at         timestamptz
+);
+
+CREATE INDEX idx_da_outbox_status ON da_outbox_event(status);
+
+
+-- ==============================
+-- 11) REFERENCE SNAPSHOT (submitted external data)
+-- ==============================
+CREATE TABLE da_reference_snapshot (
+    snapshot_id             uuid PRIMARY KEY,
+    request_id              uuid NOT NULL REFERENCES da_request(request_id),
+    stage_code              varchar(100) NOT NULL REFERENCES da_stage_definition(stage_code),
+
+    snapshot_type           varchar(50) NOT NULL,
+    snapshot_key            varchar(200) NOT NULL,
+
+    snapshot_json           jsonb NOT NULL,
+
+    created_at              timestamptz NOT NULL DEFAULT now(),
+    created_by              varchar(200) NOT NULL
+);
+
+CREATE INDEX idx_da_snapshot_request_stage ON da_reference_snapshot(request_id, stage_code);
+
+
+-- ==============================
+-- 12) STAGE ASSIGNEES (NEW) - ServiceNow-like stage assignment
+-- ==============================
+CREATE TABLE da_request_stage_assignee (
+    stage_assignee_id       uuid PRIMARY KEY,
+
+    request_id              uuid NOT NULL REFERENCES da_request(request_id),
+    request_stage_id        uuid NOT NULL REFERENCES da_request_stage(request_stage_id),
+
+    stage_code              varchar(100) NOT NULL REFERENCES da_stage_definition(stage_code),
+
+    assignee_user_id        varchar(200) NOT NULL,
+    assignee_name           varchar(200),
+
+    assignee_type           varchar(50) NOT NULL DEFAULT 'PRIMARY',  -- PRIMARY/BACKUP/ADHOC
+
+    is_active               boolean NOT NULL DEFAULT true,
+
+    assigned_at             timestamptz NOT NULL DEFAULT now(),
+    assigned_by             varchar(200) NOT NULL,
+
+    added_by_user           boolean NOT NULL DEFAULT true,
+
+    row_version             int NOT NULL DEFAULT 0
+);
+
+CREATE INDEX idx_da_stage_assignee_request
+ON da_request_stage_assignee(request_id);
+
+CREATE INDEX idx_da_stage_assignee_request_stage
+ON da_request_stage_assignee(request_stage_id);
+
+CREATE INDEX idx_da_stage_assignee_user
+ON da_request_stage_assignee(assignee_user_id);
+
+CREATE UNIQUE INDEX uq_da_stage_assignee_unique
+ON da_request_stage_assignee(request_stage_id, assignee_user_id);
+
+
+-- ==============================
+-- 13) SEED STAGE DEFINITIONS
+-- ==============================
+INSERT INTO da_stage_definition(stage_code, stage_name, stage_order, requires_excel_upload, excel_template_name, created_by)
+VALUES
+('INITIATE', 'Initiate Data Acquisition', 1, false, null, 'system'),
+('FEED_DETAILS', 'Feed Details', 2, true, 'feed_details_template.xlsx', 'system'),
+('TENANT_DETAILS', 'Tenant Details', 3, false, null, 'system'),
+('DATASET_DETAILS', 'Dataset Details', 4, true, 'dataset_details_template.xlsx', 'system'),
+('DATASET_METADATA', 'Dataset Metadata', 5, true, 'dataset_metadata_template.xlsx', 'system'),
+('PIPELINE_DAGS', 'Pipeline and DAGs', 6, false, null, 'system'),
+('TEST_SIGNOFF', 'Test Result and Sign-off', 7, false, null, 'system');
+
+
+
+
+-- =========================================================
+-- V2__business_model_request_bridge.sql
+-- Business Data Model (17 tables) + Integration with Technical Model
+-- Bridge: request_id -> da_request(request_id)
+-- Same schema: public
+-- =========================================================
+
+-- =========================================================
+-- 1) onboarding_request
+-- =========================================================
+CREATE TABLE onboarding_request (
+    request_id              uuid PRIMARY KEY,     -- [INTEGRATION] Bridge to da_request.request_id
+
+    feed_group_id           uuid NOT NULL,        -- FK to feed_group.feed_group_id
+    request_description     text,
+    request_status          text,
+    request_version         int,
+
+    CONSTRAINT fk_onboarding_request_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id)
+);
+
+-- =========================================================
+-- 2) feed_group
+-- =========================================================
+CREATE TABLE feed_group (
+    feed_group_id               uuid PRIMARY KEY,
+
+    request_id                  uuid NOT NULL,    -- [INTEGRATION] Bridge to da_request.request_id (1 request -> 1 feed_group)
+    feed_group_name             text,
+    number_of_feeds             int,
+    consumer_application        text,
+    purpose                     text,
+    data_category               text,
+    data_type                   text,
+    authorised_master_source    text,
+    feed_maturity               text,
+    feed_delivery_pattern       text,
+    created_at                  text,
+    initiative                  text,
+
+    CONSTRAINT fk_feed_group_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT uq_feed_group_request_id
+        UNIQUE (request_id)
+);
+
+-- =========================================================
+-- 3) input_feed
+-- =========================================================
+CREATE TABLE input_feed (
+    feed_id                     uuid PRIMARY KEY,
+
+    request_id                  uuid NOT NULL,    -- [INTEGRATION] Bridge to da_request.request_id
+    feed_group_id               uuid NOT NULL,    -- FK to feed_group.feed_group_id
+
+    feed_sub_group_name         text,
+    feed_file_name              text,
+    feed_arrival_sla            timestamptz,
+    distribution_format         text,
+    downstream_consumption_method text,
+    feed_frequency              text,
+    ingestion_type              text,
+    arrival_sla                 text,
+    processing_sla              text,
+    expected_size_kb            int,
+    feed_description            text,
+    delimiter                   text,
+    header                      text,
+    trailer                     text,
+    file_extension_format       text,
+    control_file                text,
+    feed_nomenclature           text,
+    severity_on_missing_sla     text,
+    feed_region                 text,
+    feed_type                   text,
+    data_sponsor                text,
+    data_owner                  text,
+
+    CONSTRAINT fk_input_feed_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT fk_input_feed_feed_group
+        FOREIGN KEY (feed_group_id) REFERENCES feed_group(feed_group_id)
+);
+
+-- =========================================================
+-- 4) dataset
+-- =========================================================
+CREATE TABLE dataset (
+    dataset_id                      int PRIMARY KEY,
+
+    request_id                      uuid NOT NULL,      -- [INTEGRATION] Bridge to da_request.request_id
+    feed_group_id                   uuid NOT NULL,      -- FK to feed_group.feed_group_id
+    tenant_id                       uuid,               -- FK to tenant.tenant_id
+
+    dataset_name                     text,
+    dataset_description              text,
+    swc_aa_id                        text,
+    dataset_type                     text,
+    dataset_metadata_upload_file     text,
+    egress_type                      text,
+    dataset_owner_name               text,
+    dataset_owner_delegate           text,
+    business_owner                   text,
+    dataset_primary_concept          text,
+
+    gateway_crew_lead                text,
+    gateway_pm                       text,
+    gateway_tech_architect           text,
+    gateway_tech_contact             text,
+
+    curation_task_id                 uuid,
+    curation_task_name               text,
+
+    confidentiality_classification   text,
+    dgp_community                    text,
+    data_controls_evidence           text,
+    dataset_controls_score           text,
+    dgp_owner                        text,
+    data_governance                  text,
+
+    CONSTRAINT fk_dataset_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT fk_dataset_feed_group
+        FOREIGN KEY (feed_group_id) REFERENCES feed_group(feed_group_id)
+);
+
+-- =========================================================
+-- 5) lens
+-- =========================================================
+CREATE TABLE lens (
+    lens_id                 uuid PRIMARY KEY,
+
+    request_id              uuid NOT NULL,      -- [INTEGRATION] Bridge to da_request.request_id
+    dataset_id              int NOT NULL,       -- FK to dataset.dataset_id
+
+    lens_name               text,
+
+    CONSTRAINT fk_lens_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT fk_lens_dataset
+        FOREIGN KEY (dataset_id) REFERENCES dataset(dataset_id)
+);
+
+-- =========================================================
+-- 6) dataset_attribute
+-- =========================================================
+CREATE TABLE dataset_attribute (
+    dataset_attribute_id            timestamptz PRIMARY KEY,
+
+    request_id                      uuid NOT NULL,      -- [INTEGRATION] Bridge to da_request.request_id
+    dataset_id                      int NOT NULL,       -- FK to dataset.dataset_id
+
+    attribute                       text,
+    attribute_description           text,
+    derived_or_sourced              text,
+    sourced_dataset_name            text,
+    sourced_dataset_attribute       text,
+    logical_data_element_name       text,
+    logical_data_element_description text,
+
+    CONSTRAINT fk_dataset_attribute_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT fk_dataset_attribute_dataset
+        FOREIGN KEY (dataset_id) REFERENCES dataset(dataset_id)
+);
+
+-- =========================================================
+-- 7) pipeline
+-- =========================================================
+CREATE TABLE pipeline (
+    pipeline_id              uuid PRIMARY KEY,
+
+    request_id               uuid NOT NULL,     -- [INTEGRATION] Bridge to da_request.request_id
+    pipeline_description     text,
+
+    CONSTRAINT fk_pipeline_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id)
+);
+
+-- =========================================================
+-- 8) pipeline_feed_dataset
+-- =========================================================
+CREATE TABLE pipeline_feed_dataset (
+    feed_dataset_id          uuid PRIMARY KEY,
+
+    request_id               uuid NOT NULL,     -- [INTEGRATION] Bridge to da_request.request_id
+    feed_id                  uuid NOT NULL,     -- FK to input_feed.feed_id
+    dataset_id               int NOT NULL,      -- FK to dataset.dataset_id
+    pipeline_id              uuid NOT NULL,     -- FK to pipeline.pipeline_id
+
+    feed_nomenclature        text,
+
+    CONSTRAINT fk_pfd_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT fk_pfd_feed
+        FOREIGN KEY (feed_id) REFERENCES input_feed(feed_id),
+
+    CONSTRAINT fk_pfd_dataset
+        FOREIGN KEY (dataset_id) REFERENCES dataset(dataset_id),
+
+    CONSTRAINT fk_pfd_pipeline
+        FOREIGN KEY (pipeline_id) REFERENCES pipeline(pipeline_id)
+);
+
+-- =========================================================
+-- 9) tenant
+-- =========================================================
+CREATE TABLE tenant (
+    tenant_id            uuid PRIMARY KEY,
+
+    request_id           uuid NOT NULL,         -- [INTEGRATION] Bridge to da_request.request_id
+    meg_short_name       text,
+    swc_aa_id            text,
+    zone                 text,
+
+    CONSTRAINT fk_tenant_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT uq_tenant_request_id
+        UNIQUE (request_id)
+);
+
+-- =========================================================
+-- 10) tenant_instance
+-- =========================================================
+CREATE TABLE tenant_instance (
+    tenant_instance_id       text PRIMARY KEY,
+
+    request_id               uuid NOT NULL,     -- [INTEGRATION] Bridge to da_request.request_id
+    tenant_id                uuid NOT NULL,     -- FK to tenant.tenant_id
+
+    system_environment       text,
+    instance_name            text,
+    url                      text,
+
+    CONSTRAINT fk_tenant_instance_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT fk_tenant_instance_tenant
+        FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id)
+);
+
+-- =========================================================
+-- 11) storage_region
+-- =========================================================
+CREATE TABLE storage_region (
+    storage_region        text PRIMARY KEY
+);
+
+-- =========================================================
+-- 12) storage_details
+-- =========================================================
+CREATE TABLE storage_details (
+    storage_details_id        text PRIMARY KEY,
+
+    request_id                uuid NOT NULL,     -- [INTEGRATION] Bridge to da_request.request_id
+    storage_region            text NOT NULL,     -- FK to storage_region.storage_region
+    tenant_id                 uuid NOT NULL,     -- FK to tenant.tenant_id
+    storage_account           text,
+    tenant_instance_id        text,              -- FK to tenant_instance.tenant_instance_id
+
+    CONSTRAINT fk_storage_details_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT fk_storage_details_region
+        FOREIGN KEY (storage_region) REFERENCES storage_region(storage_region),
+
+    CONSTRAINT fk_storage_details_tenant
+        FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id),
+
+    CONSTRAINT fk_storage_details_tenant_instance
+        FOREIGN KEY (tenant_instance_id) REFERENCES tenant_instance(tenant_instance_id)
+);
+
+-- =========================================================
+-- 13) mandator
+-- =========================================================
+CREATE TABLE mandator (
+    mandator            text PRIMARY KEY,
+    mandator_name       text,
+    storage_region      text NOT NULL,   -- FK to storage_region.storage_region
+
+    CONSTRAINT fk_mandator_region
+        FOREIGN KEY (storage_region) REFERENCES storage_region(storage_region)
+);
+
+-- =========================================================
+-- 14) legal_entity
+-- =========================================================
+CREATE TABLE legal_entity (
+    legal_entity_name            text PRIMARY KEY,
+    country_of_incorporation     text,
+    entity_region                text
+);
+
+-- =========================================================
+-- 15) business_division
+-- =========================================================
+CREATE TABLE business_division (
+    business_division        text PRIMARY KEY
+);
+
+-- =========================================================
+-- 16) feed_legal_entity
+-- =========================================================
+CREATE TABLE feed_legal_entity (
+    feed_legal_entity_id     uuid PRIMARY KEY,
+
+    request_id               uuid NOT NULL,     -- [INTEGRATION] Bridge to da_request.request_id
+    feed_id                  uuid NOT NULL,     -- FK to input_feed.feed_id
+    legal_entity_name        text NOT NULL,     -- FK to legal_entity.legal_entity_name
+    business_division        text NOT NULL,     -- FK to business_division.business_division
+
+    CONSTRAINT fk_feed_legal_entity_da_request
+        FOREIGN KEY (request_id) REFERENCES da_request(request_id),
+
+    CONSTRAINT fk_feed_legal_entity_feed
+        FOREIGN KEY (feed_id) REFERENCES input_feed(feed_id),
+
+    CONSTRAINT fk_feed_legal_entity_legal_entity
+        FOREIGN KEY (legal_entity_name) REFERENCES legal_entity(legal_entity_name),
+
+    CONSTRAINT fk_feed_legal_entity_business_division
+        FOREIGN KEY (business_division) REFERENCES business_division(business_division)
+);
+
+-- =========================================================
+-- 17) source_system
+-- =========================================================
+CREATE TABLE source_system (
+    swc_aa_id                text PRIMARY KEY,
+    app_dir_reference        text,
+    reference_data_group     text,
+    url                      text
+);
+
+-- =========================================================
+-- Additional FK: dataset -> tenant
+-- (kept here to avoid dependency ordering issues)
+-- =========================================================
+ALTER TABLE dataset
+ADD CONSTRAINT fk_dataset_tenant
+FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id);
+
+-- =========================================================
+-- Useful Indexes (Business Queries by request_id)
+-- =========================================================
+CREATE INDEX idx_feed_group_request_id ON feed_group(request_id);
+CREATE INDEX idx_input_feed_request_id ON input_feed(request_id);
+CREATE INDEX idx_dataset_request_id ON dataset(request_id);
+CREATE INDEX idx_tenant_request_id ON tenant(request_id);
+CREATE INDEX idx_pipeline_request_id ON pipeline(request_id);
+CREATE INDEX idx_pfd_request_id ON pipeline_feed_dataset(request_id);
+CREATE INDEX idx_dataset_attribute_request_id ON dataset_attribute(request_id);
+CREATE INDEX idx_lens_request_id ON lens(request_id);
+CREATE INDEX idx_feed_legal_entity_request_id ON feed_legal_entity(request_id);
+CREATE INDEX idx_storage_details_request_id ON storage_details(request_id);
+CREATE INDEX idx_tenant_instance_request_id ON tenant_instance(request_id);
+
